@@ -124,27 +124,47 @@ public:
         return result; // Возврат результата
     }
 
-    // Метод для Кронекерова произведения
-    /*DenseMatrix KroneckerProduct(const DenseMatrix& other) const {
-        // Результирующая матрица будет размером (m * m') x (n * n')
-        DenseMatrix result(m * other.m, n * other.n);
-
-        // Итерация по элементам текущей матрицы
-        for (size_t i = 0; i < m; ++i) {
-            for (size_t j = 0; j < n; ++j) {
-                T a_ij = (*this)(i, j); // Текущий элемент
-                // Умножение текущего элемента на всю матрицу other
-                for (size_t k = 0; k < other.m; ++k) {
-                    for (size_t l = 0; l < other.n; ++l) {
-                        result(i * other.m + k, j * other.n + l) = a_ij * other(k, l);
-                    }
-                }
-            }
-        }
-        return result; // Возврат результирующей матрицы
-    }*/
 };
 
+// Перегруженный оператор << для вывода матриц
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const DenseMatrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.rows(); ++i) {
+        for (size_t j = 0; j < matrix.cols(); ++j) {
+
+            os << matrix(i, j) << " "; // Выводим элементы в строку
+        }
+        os << std::endl; // Переходим на следующую строку
+    }
+    return os; // Возвращаем поток
+}
+
+// Общие функции для работы с матрицами
+
+template <typename T>
+T FrobeniusNorm(const DenseMatrix<T>& matrix) {
+    // Реализация функции вычисления нормы Фробениуса
+    T sum = 0; // Переменная для накопления суммы квадратов элементов
+    for (size_t i = 0; i < matrix.rows(); ++i) {
+        for (size_t j = 0; j < matrix.cols(); ++j) {
+            sum += matrix(i, j) * matrix(i, j); // Суммируем квадраты элементов
+        }
+    }
+    return std::sqrt(sum); // Возвращаем квадратный корень из суммы
+}
+
+template <typename T>
+DenseMatrix<T> Transpose(const DenseMatrix<T>& matrix) {
+    // Реализация функции транспонирования плотной матрицы
+    DenseMatrix<T> result(matrix.cols(), matrix.rows()); // Создаем матрицу с измененной размерностью
+    for (size_t i = 0; i < matrix.rows(); ++i) {
+        for (size_t j = 0; j < matrix.cols(); ++j) {
+            result(j, i) = matrix(i, j); // Транспонируем
+        }
+    }
+    return result; // Возвращаем результирующую матрицу
+}
 
 /*Этот класс представляет "плотную" матрицу, которая хранит элементы в виде одномерного массива. Он предоставляет функции для:
 

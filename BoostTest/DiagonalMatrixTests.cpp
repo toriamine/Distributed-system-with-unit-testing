@@ -110,4 +110,6 @@ BOOST_AUTO_TEST_CASE(IncompatibleMultiplication) {
     BOOST_CHECK_THROW(a * b, std::runtime_error); // Ожидаем исключение при умножении несовместимых матриц
 }
 
+
+
 BOOST_AUTO_TEST_SUITE_END() // Конец набора тестов для диагональных матриц

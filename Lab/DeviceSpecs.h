@@ -4,23 +4,29 @@
 // Класс GpuSpec хранит спецификации графической карты.
 class GpuSpec {
 public:
-    GpuSpec() = default; // Конструктор по умолчанию
+    // Конструктор по умолчанию
+    GpuSpec()
+        : _memory(0), _clockSpeed(0), _power(0), _bandwidth(0),
+        _cudaCores(0), _rayTracingCores(0) {}
+
     // Конструктор с параметрами
     GpuSpec(double memory, double clockSpeed, double power, double bandwidth,
         int cudaCores, const std::string& memoryType, int rayTracingCores,
         const std::string& apiSupport)
-        : _memory(memory), _clockSpeed(clockSpeed), _power(power), _bandwidth(bandwidth),
-        _cudaCores(cudaCores), _memoryType(memoryType),
-        _rayTracingCores(rayTracingCores), _apiSupport(apiSupport) {}
+        : _memory(memory), _clockSpeed(clockSpeed), _power(power),
+        _bandwidth(bandwidth), _cudaCores(cudaCores),
+        _memoryType(memoryType), _rayTracingCores(rayTracingCores),
+        _apiSupport(apiSupport) {}
 
-    double GetMemory() const { return _memory; }               // Получить объем памяти в ГБ
-    double GetClockSpeed() const { return _clockSpeed; }       // Получить тактовую частоту в ГГц
-    double GetPower() const { return _power; }                 // Получить потребляемую мощность в Вт
-    double GetBandwidth() const { return _bandwidth; }         // Получить пропускную способность в ГБ/с
-    int GetCudaCores() const { return _cudaCores; }           // Получить количество CUDA ядер
-    std::string GetMemoryType() const { return _memoryType; }  // Получить тип памяти (GDDR5, GDDR6 и т.д.)
-    int GetRayTracingCores() const { return _rayTracingCores; } // Получить количество ядер для трассировки лучей
-    std::string GetApiSupport() const { return _apiSupport; }  // Получить поддерживаемые API (DirectX, OpenGL)
+    // Геттеры
+    double GetMemory() const { return _memory; }
+    double GetClockSpeed() const { return _clockSpeed; }
+    double GetPower() const { return _power; }
+    double GetBandwidth() const { return _bandwidth; }
+    int GetCudaCores() const { return _cudaCores; }
+    std::string GetMemoryType() const { return _memoryType; }
+    int GetRayTracingCores() const { return _rayTracingCores; }
+    std::string GetApiSupport() const { return _apiSupport; }
 
 private:
     double _memory;           // Объем памяти в ГБ
@@ -33,10 +39,17 @@ private:
     std::string _apiSupport;  // Поддерживаемые API (например, DirectX, OpenGL)
 };
 
+
 // Класс CpuSpec хранит спецификации процессора.
 class CpuSpec {
 public:
-    CpuSpec() = default; // Конструктор по умолчанию
+    // Конструктор по умолчанию
+    CpuSpec()
+        : _coreCount(0), _clockSpeed(0.0), _power(0.0),
+        _thermalDesignPower(0.0), _threadCount(0),
+        _cacheSize(0.0), _hasIntegratedGraphics(false),
+        _architecture("") {} // Инициализация значений по умолчанию
+
     // Конструктор с параметрами
     CpuSpec(int coreCount, double clockSpeed, double power, double thermalDesignPower,
         int threadCount, double cacheSize, bool hasIntegratedGraphics,
@@ -46,6 +59,7 @@ public:
         _cacheSize(cacheSize), _hasIntegratedGraphics(hasIntegratedGraphics),
         _architecture(architecture) {}
 
+    // Геттеры
     int GetCoreCount() const { return _coreCount; }               // Получить количество ядер процессора
     double GetClockSpeed() const { return _clockSpeed; }           // Получить тактовую частоту в ГГц
     double GetPower() const { return _power; }                     // Получить потребляемую мощность в Вт
@@ -57,7 +71,6 @@ public:
 
 private:
     int _coreCount;                 // Количество ядер процессора
-
     double _clockSpeed;             // Тактовая частота в ГГц
     double _power;                  // Потребляемая мощность в Вт
     double _thermalDesignPower;     // Тепловая мощность в Вт
@@ -67,16 +80,24 @@ private:
     std::string _architecture;      // Архитектура (например, x86, ARM)
 };
 
+
 // Класс RamSpec хранит спецификации оперативной памяти.
 class RamSpec {
 public:
-    RamSpec() = default; // Конструктор по умолчанию
+    // Конструктор по умолчанию
+    RamSpec()
+        : _size(0.0), _mhz(0.0), _latency(0.0),
+        _memoryType(""), _voltage(0.0),
+        _formFactor(""), _hasECC(false) {} // Инициализация значений по умолчанию
+
     // Конструктор с параметрами
     RamSpec(double size, double mhz, double latency, const std::string& memoryType,
         double voltage, const std::string& formFactor, bool hasECC)
-        : _size(size), _mhz(mhz), _latency(latency), _memoryType(memoryType),
-        _voltage(voltage), _formFactor(formFactor), _hasECC(hasECC) {}
+        : _size(size), _mhz(mhz), _latency(latency),
+        _memoryType(memoryType), _voltage(voltage),
+        _formFactor(formFactor), _hasECC(hasECC) {}
 
+    // Геттеры
     double GetSize() const { return _size; }                      // Получить размер памяти в ГБ
     double GetMhz() const { return _mhz; }                        // Получить частоту памяти в МГц
     double GetLatency() const { return _latency; }                // Получить задержку в наносекундах
@@ -98,13 +119,19 @@ private:
 // Класс LanSpec хранит спецификации сетевого адаптера.
 class LanSpec {
 public:
-    LanSpec() = default; // Конструктор по умолчанию
+    // Конструктор по умолчанию
+    LanSpec()
+        : _power(0.0), _bandwidth(0.0), _interfaceType(""),
+        _protocolStandard(""), _latency(0.0) {} // Инициализация значений по умолчанию
+
     // Конструктор с параметрами
     LanSpec(double power, double bandwidth, const std::string& interfaceType,
         const std::string& protocolStandard, double latency)
-        : _power(power), _bandwidth(bandwidth), _interfaceType(interfaceType),
+        : _power(power), _bandwidth(bandwidth),
+        _interfaceType(interfaceType),
         _protocolStandard(protocolStandard), _latency(latency) {}
 
+    // Геттеры
     double GetPower() const { return _power; }                      // Получить потребляемую мощность в Вт
     double GetBandwidth() const { return _bandwidth; }              // Получить пропускную способность в Гбит/с
     std::string GetInterfaceType() const { return _interfaceType; } // Получить тип интерфейса (Ethernet, Wi-Fi)
@@ -122,9 +149,14 @@ private:
 // Класс SSDSpec хранит спецификации SSD (твердотельных накопителей).
 class SSDSpec {
 public:
-    SSDSpec() = default; // Конструктор по умолчанию
-    // Конструктор с параметрами
+    // Конструктор по умолчанию
+    SSDSpec()
+        : _size(0.0), _readSpeed(0.0), _writeSpeed(0.0),
+        _formFactor(""), _interfaceType(""),
+        _randomReadSpeed(0.0), _randomWriteSpeed(0.0),
+        _endurance(0.0) {} // Инициализация значений по умолчанию
 
+    // Конструктор с параметрами
     SSDSpec(double size, double readSpeed, double writeSpeed, const std::string& formFactor,
         const std::string& interfaceType, double randomReadSpeed, double randomWriteSpeed,
         double endurance)
@@ -133,6 +165,7 @@ public:
         _randomReadSpeed(randomReadSpeed), _randomWriteSpeed(randomWriteSpeed),
         _endurance(endurance) {}
 
+    // Геттеры
     double GetSize() const { return _size; }                       // Получить размер в ГБ
     double GetReadSpeed() const { return _readSpeed; }             // Получить скорость чтения в МБ/с
     double GetWriteSpeed() const { return _writeSpeed; }           // Получить скорость записи в МБ/с
@@ -156,7 +189,12 @@ private:
 // Класс HDDSpec хранит спецификации HDD (жестких дисков).
 class HDDSpec {
 public:
-    HDDSpec() = default; // Конструктор по умолчанию
+    // Конструктор по умолчанию
+    HDDSpec()
+        : _size(0.0), _readSpeed(0.0), _writeSpeed(0.0),
+        _rpm(0), _bufferSize(0.0),
+        _formFactor(""), _averageSeekTime(0.0) {} // Инициализация значений по умолчанию
+
     // Конструктор с параметрами
     HDDSpec(double size, double readSpeed, double writeSpeed, int rpm,
         double bufferSize, const std::string& formFactor, double averageSeekTime)
@@ -164,6 +202,7 @@ public:
         _rpm(rpm), _bufferSize(bufferSize),
         _formFactor(formFactor), _averageSeekTime(averageSeekTime) {}
 
+    // Геттеры
     double GetSize() const { return _size; }                       // Получить размер в ГБ
     double GetReadSpeed() const { return _readSpeed; }             // Получить скорость чтения в МБ/с
     double GetWriteSpeed() const { return _writeSpeed; }           // Получить скорость записи в МБ/с
@@ -181,3 +220,4 @@ private:
     std::string _formFactor;   // Форм-фактор (например, 3.5", 2.5")
     double _averageSeekTime;   // Среднее время поиска
 };
+

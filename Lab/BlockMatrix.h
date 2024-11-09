@@ -178,3 +178,14 @@ BlockMatrix<T> BlockMatrix<T>::KroneckerProduct(const BlockMatrix<T>& other) con
 
     return result; // Возвращает результирующую блочную матрицу
 }
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const BlockMatrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.rows(); ++i) {
+        for (size_t j = 0; j < matrix.cols(); ++j) {
+            os << matrix(i, j) << " "; // Выводим элементы блоков
+        }
+        os << std::endl; // Переход на новую строку
+    }
+    return os; // Возвращаем поток
+}

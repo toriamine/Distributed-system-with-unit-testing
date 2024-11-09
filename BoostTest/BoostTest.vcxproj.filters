@@ -27,9 +27,6 @@
     <ClCompile Include="VectorHCSTests.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="MatrixTests.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="DenseMatrixTests.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

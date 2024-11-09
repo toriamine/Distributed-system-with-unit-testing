@@ -97,3 +97,19 @@ public:
         return result; // Возвращаем результат
     }
 };
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const DiagonalMatrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.rows(); ++i) {
+        for (size_t j = 0; j < matrix.cols(); ++j) {
+            if (i == j) {
+                os << matrix(i, j) << " "; // Выводим только диагональные элементы
+            }
+            else {
+                os << "0 "; // Остальные элементы равны нулю
+            }
+        }
+        os << std::endl; // Переход на новую строку
+    }
+    return os; // Возвращаем поток
+}
