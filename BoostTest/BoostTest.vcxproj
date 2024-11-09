@@ -134,7 +134,6 @@
     <ClCompile Include="ClusterTests.cpp" />
     <ClCompile Include="DenseMatrixTests.cpp" />
     <ClCompile Include="DiagonalMatrixTests.cpp" />
-    <ClCompile Include="MatrixTests.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="GeometryTests.cpp" />
     <ClCompile Include="VectorHCSTests.cpp" />
