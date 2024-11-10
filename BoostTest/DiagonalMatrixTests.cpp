@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "../Lab/DiagonalMatrix.h"
+#include "../Lab/DiagonalMatrix.cpp"
 #include "../Lab/Matrix.h"
 
 BOOST_AUTO_TEST_SUITE(DiagonalMatrixTests) // Ќачало набора тестов дл€ диагональных матриц
