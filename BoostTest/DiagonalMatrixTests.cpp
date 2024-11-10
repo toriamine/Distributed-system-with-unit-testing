@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(Addition) {
     BOOST_CHECK_EQUAL((*result)(1, 1), 7.0); // Ожидаем, что (1, 1) равно 2.0 + 5.0 = 7.0
     BOOST_CHECK_EQUAL((*result)(2, 2), 9.0);// Ожидаем, что (2, 2) равно 3.0 + 6.0 = 9.0
 
-    delete result; // Не забывайте освобождать память
+    delete result;
 }
 
 // Тестирование вычитания диагональных матриц
@@ -69,6 +69,8 @@ BOOST_AUTO_TEST_CASE(Subtraction) {
     BOOST_CHECK_EQUAL((*result)(0, 0), 2.0); // Ожидаем, что (0, 0) равно 5.0 - 3.0 = 2.0
     BOOST_CHECK_EQUAL((*result)(1, 1), 4.0); // Ожидаем, что (1, 1) равно 6.0 - 2.0 = 4.0
     BOOST_CHECK_EQUAL((*result)(2, 2), 6.0); // Ожидаем, что (2, 2) равно 7.0 - 1.0 = 6.0
+
+    delete result;
 }
 
 // Тестирование умножения диагональных матриц
@@ -93,6 +95,8 @@ BOOST_AUTO_TEST_CASE(Multiplication) {
     BOOST_CHECK_EQUAL((*result)(0, 0), 4.0); // Ожидаем, что (0, 0) равно 1.0 * 4.0 = 4.0
     BOOST_CHECK_EQUAL((*result)(1, 1), 10.0); // Ожидаем, что (1, 1) равно 2.0 * 5.0 = 10.0
     BOOST_CHECK_EQUAL((*result)(2, 2), 18.0); // Ожидаем, что (2, 2) равно 3.0 * 6.0 = 18.0
+
+    delete result;
 }
 
 // Тестирование сложения несовместимых матриц
