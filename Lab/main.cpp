@@ -1,6 +1,9 @@
 // main.cpp
 #include <iostream>
 #include "Matrix.h"
+#include "BlockMatrix.h"
+#include "DiagonalMatrix.h"
+#include "DenseMatrix.h"
 #include "VectorHCS.h"
 #include "Cluster.h"
 #include "ClusterNode.h"
