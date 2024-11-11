@@ -5,7 +5,7 @@ BOOST_AUTO_TEST_SUITE(BlockMatrixTests) // Начало набора тестов для блочных матр
 
 // Тестирование конструктора и доступа к элементам блочной матрицы
 BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
-    BlockMatrix<double> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
+    BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
 
     // Установим значения в блоки
     // Блок (0, 0):
@@ -47,8 +47,8 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
 }
 
 BOOST_AUTO_TEST_CASE(BlockMatrixTestAddition) {
-    BlockMatrix<double> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
 
     // Заполнение блоков матрицы a
     // Блок (0, 0):
@@ -68,19 +68,21 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestAddition) {
     b(0, 0)(1, 0) = 7.0;
     b(0, 0)(1, 1) = 8.0;
 
-    BlockMatrix<double> result = a + b; // Сложение двух блочных матриц
+    BlockMatrix<double, DenseMatrix>* result = static_cast<BlockMatrix<double, DenseMatrix>*>(a + b);
 
     // Проверка результатов сложения
     // Ожидаемый результат:
     // [ 1.0 + 5.0, 2.0 + 6.0 ]  => [ 6.0, 8.0 ]
     // [ 3.0 + 7.0, 4.0 + 8.0 ]  => [ 10.0, 12.0 ]
-    BOOST_CHECK_EQUAL(result(0, 0)(0, 0), 6.0);  // Проверка суммы первого элемента
-    BOOST_CHECK_EQUAL(result(0, 0)(1, 1), 12.0); // Проверка суммы второго элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(0, 0), 6.0);  // Проверка суммы первого элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(1, 1), 12.0); // Проверка суммы второго элемента
+
+    delete result;
 }
 
 BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtraction) {
-    BlockMatrix<double> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
 
     // Заполнение блоков матрицы a
     // Блок (0, 0):
@@ -100,20 +102,22 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtraction) {
     b(0, 0)(1, 0) = 7.0;
     b(0, 0)(1, 1) = 8.0;
 
-    BlockMatrix<double> result = a - b; // Вычитание двух блочных матриц
+    BlockMatrix<double, DenseMatrix>* result = static_cast<BlockMatrix<double, DenseMatrix>*>(a - b); // Вычитание двух блочных матриц
 
     // Проверка результатов вычитания
     // Ожидаемый результат:
     // [ 10.0 - 5.0, 12.0 - 6.0 ] => [ 5.0, 6.0 ]
 
     // [ 14.0 - 7.0, 16.0 - 8.0 ] => [ 7.0, 8.0 ]
-    BOOST_CHECK_EQUAL(result(0, 0)(0, 0), 5.0);  // Проверка разности первого элемента
-    BOOST_CHECK_EQUAL(result(0, 0)(1, 1), 8.0); // Проверка разности второго элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(0, 0), 5.0);  // Проверка разности первого элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(1, 1), 8.0); // Проверка разности второго элемента
+
+    delete result;
 }
 
 BOOST_AUTO_TEST_CASE(BlockMatrixTestMultiplication) {
-    BlockMatrix<double> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
 
     // Заполнение блоков матрицы a
     // Блок (0, 0):
@@ -133,21 +137,23 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestMultiplication) {
     b(0, 0)(1, 0) = 7.0;
     b(0, 0)(1, 1) = 8.0;
 
-    BlockMatrix<double> result = a * b; // Умножение двух блочных матриц
+    BlockMatrix<double, DenseMatrix>* result = static_cast<BlockMatrix<double, DenseMatrix>*>(a * b); // Умножение двух блочных матриц
 
     // Проверка результатов умножения
     // Ожидаемый результат:
     // [ (1.0*5.0 + 2.0*7.0), (1.0*6.0 + 2.0*8.0) ]
     // [ (3.0*5.0 + 4.0*7.0), (3.0*6.0 + 4.0*8.0) ]
     // = [ 19.0, 22.0 ]
-    BOOST_CHECK_EQUAL(result(0, 0)(0, 0), 19.0); // Проверка первого элемента
-    BOOST_CHECK_EQUAL(result(0, 0)(0, 1), 22.0); // Проверка второго элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(0, 0), 19.0); // Проверка первого элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(0, 1), 22.0); // Проверка второго элемента
+
+    delete result;
 }
 
 // Тестирование сложения несовместимых матриц
 BOOST_AUTO_TEST_CASE(BlockMatrixTestIncompatibleAddition) {
-    BlockMatrix<double> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double> b(3, 2, 2, 2); // Создаем вторую блочную матрицу 3x2 (несовместимый размер)
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
+    BlockMatrix<double, DenseMatrix> b(3, 2, 2, 2); // Создаем вторую блочную матрицу 3x2 (несовместимый размер)
 
     // Проверяем, что сложение этих матриц вызывает исключение
     BOOST_CHECK_THROW(a + b, std::runtime_error);
@@ -164,7 +170,7 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestIncompatibleMultiplication) {
 
 // Тестирование сложения блочных матриц с элементами типа int
 BOOST_AUTO_TEST_CASE(BlockMatrixTestMatrixAdditionTest) {
-    BlockMatrix<int> matrixA(2, 2, 1, 1); // Создаем блочную матрицу 2x2 с блоками 1x1
+    BlockMatrix<int, DenseMatrix> matrixA(2, 2, 1, 1); // Создаем блочную матрицу 2x2 с блоками 1x1
     // Заполнение блоков матрицы A
     // Блок (0, 0):
     // [ 1 ]
@@ -179,7 +185,7 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestMatrixAdditionTest) {
     // [ 4 ]
     matrixA(1, 1)(0, 0) = 4;
 
-    BlockMatrix<int> matrixB(2, 2, 1, 1); // Создаем блочную матрицу 2x2 с блоками 1x1
+    BlockMatrix<int, DenseMatrix> matrixB(2, 2, 1, 1); // Создаем блочную матрицу 2x2 с блоками 1x1
     // Заполнение блоков матрицы B
     // Блок (0, 0):
     // [ 5 ]
@@ -194,20 +200,22 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestMatrixAdditionTest) {
     // [ 8 ]
     matrixB(1, 1)(0, 0) = 8;
 
-    BlockMatrix<int> result = matrixA + matrixB; // Сложение двух блочных матриц
+    BlockMatrix<int, DenseMatrix>* result = static_cast<BlockMatrix<int, DenseMatrix>*>(matrixA + matrixB); // Сложение двух блочных матриц
 
     // Проверка результатов сложения
     // Ожидаемый результат:
     // [ 1 + 5, 2 + 6 ] => [ 6, 8 ]
     // [ 3 + 7, 4 + 8 ] => [ 10, 12 ]
-    BOOST_CHECK_EQUAL(result(0, 0)(0, 0), 6);  // Проверка суммы первого элемента
-    BOOST_CHECK_EQUAL(result(0, 1)(0, 0), 8);  // Проверка суммы второго элемента
-    BOOST_CHECK_EQUAL(result(1, 0)(0, 0), 10); // Проверка суммы третьего элемента
-    BOOST_CHECK_EQUAL(result(1, 1)(0, 0), 12); // Проверка суммы четвертого элемента
+    BOOST_CHECK_EQUAL((*result)(0, 0)(0, 0), 6);  // Проверка суммы первого элемента
+    BOOST_CHECK_EQUAL((*result)(0, 1)(0, 0), 8);  // Проверка суммы второго элемента
+    BOOST_CHECK_EQUAL((*result)(1, 0)(0, 0), 10); // Проверка суммы третьего элемента
+    BOOST_CHECK_EQUAL((*result)(1, 1)(0, 0), 12); // Проверка суммы четвертого элемента
+
+    delete result;
 }
 
 BOOST_AUTO_TEST_CASE(BlockMatrixTestKroneckerProductTest) {
-    BlockMatrix<int> A(3, 2, 1, 1);
+    BlockMatrix<int, DenseMatrix> A(3, 2, 1, 1);
     A(0, 0)(0, 0) = 1;
     A(0, 1)(0, 0) = 2;
     A(1, 0)(0, 0) = 3;
@@ -215,7 +223,7 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestKroneckerProductTest) {
     A(2, 0)(0, 0) = 1;
     A(2, 1)(0, 0) = 0;
 
-    BlockMatrix<int> B(2, 3, 1, 1);
+    BlockMatrix<int, DenseMatrix> B(2, 3, 1, 1);
     B(0, 0)(0, 0) = 0;
     B(0, 1)(0, 0) = 5;
     B(0, 2)(0, 0) = 2;
@@ -223,7 +231,7 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestKroneckerProductTest) {
     B(1, 1)(0, 0) = 7;
     B(1, 2)(0, 0) = 3;
 
-    BlockMatrix<int> result = A.KroneckerProduct(B);
+    BlockMatrix<int, DenseMatrix> result = A.KroneckerProduct(B);
 
     // Поскольку A имеет 3 строки и 2 столбца, а B имеет 2 строки и 3 столбца,
     // результирующая матрица будет иметь (3*2) x (2*3) = 6 x 6.
@@ -280,8 +288,8 @@ BOOST_AUTO_TEST_CASE(MatrixTestBlock) {
     // Correct initialization of BlockMatrix
     size_t blockRows = 2; // Number of rows in each block
     size_t blockCols = 2; // Number of columns in each block
-    BlockMatrix<double> block1(2, 2, blockRows, blockCols); // 2x2 blocks of 2x2 size
-    BlockMatrix<double> block2(2, 2, blockRows, blockCols); // 2x2 blocks of 2x2 size
+    BlockMatrix<double, DenseMatrix> block1(2, 2, blockRows, blockCols); // 2x2 blocks of 2x2 size
+    BlockMatrix<double, DenseMatrix> block2(2, 2, blockRows, blockCols); // 2x2 blocks of 2x2 size
 
     // Set values for the blocks in block1
     block1(0, 0)(0, 0) = 1;
@@ -296,18 +304,21 @@ BOOST_AUTO_TEST_CASE(MatrixTestBlock) {
     block2(0, 1)(0, 1) = 8;
 
     // Сложение
-    BlockMatrix<double> resultAdd = block1 + block2;
-    BOOST_CHECK_EQUAL(resultAdd(0, 0)(0, 0), 6);
-    BOOST_CHECK_EQUAL(resultAdd(0, 0)(0, 1), 8);
-    BOOST_CHECK_EQUAL(resultAdd(0, 1)(0, 0), 10);
-    BOOST_CHECK_EQUAL(resultAdd(0, 1)(0, 1), 12);
+    BlockMatrix<double, DenseMatrix>* resultAdd = static_cast<BlockMatrix<double, DenseMatrix>*>(block1 + block2);
+    BOOST_CHECK_EQUAL((*resultAdd)(0, 0)(0, 0), 6);
+    BOOST_CHECK_EQUAL((*resultAdd)(0, 0)(0, 1), 8);
+    BOOST_CHECK_EQUAL((*resultAdd)(0, 1)(0, 0), 10);
+    BOOST_CHECK_EQUAL((*resultAdd)(0, 1)(0, 1), 12);
 
     // Вычитание
-    BlockMatrix<double> resultSub = block2 - block1;
-    BOOST_CHECK_EQUAL(resultSub(0, 0)(0, 0), 4);
-    BOOST_CHECK_EQUAL(resultSub(0, 0)(0, 1), 4);
-    BOOST_CHECK_EQUAL(resultSub(0, 1)(0, 0), 4);
-    BOOST_CHECK_EQUAL(resultSub(0, 1)(0, 1), 4);
+    BlockMatrix<double, DenseMatrix>* resultSub = static_cast<BlockMatrix<double, DenseMatrix>*>(block1 - block2);
+    BOOST_CHECK_EQUAL((*resultSub)(0, 0)(0, 0), 4);
+    BOOST_CHECK_EQUAL((*resultSub)(0, 0)(0, 1), 4);
+    BOOST_CHECK_EQUAL((*resultSub)(0, 1)(0, 0), 4);
+    BOOST_CHECK_EQUAL((*resultSub)(0, 1)(0, 1), 4);
+
+    delete resultAdd;
+    delete resultSub;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

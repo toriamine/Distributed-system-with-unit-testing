@@ -17,10 +17,10 @@ public:
     DiagonalMatrix(size_t rows, size_t cols);
 
     // Оператор доступа к элементу (модифицируемый)
-    T& operator()(size_t i, size_t j) override;
+    T& operator()(size_t i, size_t j);
 
     // Оператор доступа к элементу (константный)
-    const T& operator()(size_t i, size_t j) const override;
+    const T& operator()(size_t i, size_t j) const;
 
     // Метод для получения количества строк
     size_t rows() const override;
