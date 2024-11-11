@@ -117,8 +117,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-        // Create matrices and distributed vectors
-        // Create a 3x3 dense matrix
+        // Создать плотную матрицу 3x3
         DenseMatrix<double> denseMatrix = {
             {1.0, 2.0, 3.0},
             {4.0, 5.0, 6.0},
@@ -126,29 +125,61 @@ int main(int argc, char* argv[]) {
         };
         std::cout << "Dense Matrix:\n" << denseMatrix << std::endl;
 
-        // Create a 3x3 diagonal matrix
+        // Создать диагональную матрицу 3x3
         DiagonalMatrix<double> diagonalMatrix(3, 3);
         diagonalMatrix(0, 0) = 1.0;
         diagonalMatrix(1, 1) = 2.0;
         diagonalMatrix(2, 2) = 3.0;
         std::cout << "Diagonal Matrix:\n" << diagonalMatrix << std::endl;
 
-        // Create a 2x2 block matrix with 2x2 blocks
-        BlockMatrix<double> blockMatrix(2, 2, 2, 2);
-        // Initialize the block matrix
+        // Создать блочную матрицу с 2x2 блоками
+        BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2);
+        // Инициализировать блочную матрицу
         blockMatrix(0, 0) = DenseMatrix<double>{ {1, 2}, {3, 4} };
         blockMatrix(0, 1) = DenseMatrix<double>{ {5, 6}, {7, 8} };
         blockMatrix(1, 0) = DenseMatrix<double>{ {9, 10}, {11, 12} };
         blockMatrix(1, 1) = DenseMatrix<double>{ {13, 14}, {15, 16} };
         std::cout << "Block Matrix:\n" << blockMatrix << std::endl;
 
-        // Compute the product of block matrices
-        BlockMatrix<double> productMatrix = blockMatrix * blockMatrix;
+        // Вычислить произведение блочных матриц
+        BlockMatrix<double, DenseMatrix>* productMatrix = static_cast<BlockMatrix<double, DenseMatrix>*>(blockMatrix + blockMatrix);
         std::cout << "Product of Block Matrices:\n" << productMatrix << std::endl;
+        delete productMatrix;
 
-        // Compute the Kronecker product of block matrices
-        BlockMatrix<double> kroneckerMatrix = blockMatrix.KroneckerProduct(blockMatrix);
+        // Вычислить произведение Кронекера блочных матриц
+        BlockMatrix<double, DenseMatrix> kroneckerMatrix = blockMatrix.KroneckerProduct(blockMatrix);
         std::cout << "Kronecker Product of Block Matrices:\n" << kroneckerMatrix << std::endl;
+
+        // Пример блочной матрицы с диагональными матрицами
+        BlockMatrix<double, DiagonalMatrix> blockDiagonalMatrix(2, 2, 2, 2);
+        blockDiagonalMatrix(0, 0) = DiagonalMatrix<double>(2, 2);
+        blockDiagonalMatrix(0, 0)(0, 0) = 1.0;
+        blockDiagonalMatrix(0, 0)(1, 1) = 2.0;
+
+        blockDiagonalMatrix(0, 1) = DiagonalMatrix<double>(2, 2);
+        blockDiagonalMatrix(0, 1)(0, 0) = 3.0;
+        blockDiagonalMatrix(0, 1)(1, 1) = 4.0;
+
+        blockDiagonalMatrix(1, 0) = DiagonalMatrix<double>(2, 2);
+        blockDiagonalMatrix(1, 0)(0, 0) = 5.0;
+        blockDiagonalMatrix(1, 0)(1, 1) = 6.0;
+
+        blockDiagonalMatrix(1, 1) = DiagonalMatrix<double>(2, 2);
+        blockDiagonalMatrix(1, 1)(0, 0) = 7.0;
+        blockDiagonalMatrix(1, 1)(1, 1) = 8.0;
+
+        std::cout << "Block Diagonal Matrix:\n" << blockDiagonalMatrix << std::endl;
+
+        // Вычислить произведение блочных диагональных матриц
+        BlockMatrix<double, DenseMatrix>* productDiagonalMatrix = static_cast<BlockMatrix<double, DenseMatrix>*>(blockDiagonalMatrix + blockDiagonalMatrix);
+        std::cout << "Product of Block Diagonal Matrices:\n" << productDiagonalMatrix << std::endl;
+        delete productDiagonalMatrix;
+
+        // Вычислить произведение Кронекера блочных диагональных матриц
+        BlockMatrix<double, DiagonalMatrix> kroneckerDiagonalMatrix = blockDiagonalMatrix.KroneckerProduct(blockDiagonalMatrix);
+        std::cout << "Kronecker Product of Block Diagonal Matrices:\n" << kroneckerDiagonalMatrix << std::endl;
+
+
 
         // Настройка параметров векторов
         VectorParams vparams1;

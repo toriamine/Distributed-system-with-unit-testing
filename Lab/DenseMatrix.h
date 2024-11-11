@@ -1,15 +1,17 @@
 #pragma once
 
 #include <iostream>
+#include "Matrix.h"
 #include <vector>
 #include <exception>
 #include <initializer_list>
 
-template <typename T = double>
-class DenseMatrix {
+// Определение класса DenseMatrix, унаследованного от Matrix
+template <typename T>
+class DenseMatrix : public Matrix<T> {
 private:
-    size_t m, n; // m - количество строк, n - количество колонок
-    T* data; // указатель на элементы матрицы
+    size_t m, n; // Количество строк и столбцов
+    T* data; // Указатель на элементы матрицы
 
 public:
     // Конструктор с указанием количества строк и колонок
@@ -73,55 +75,55 @@ public:
     size_t cols() const { return n; }
 
     // Оператор сложения
-    DenseMatrix operator+(const DenseMatrix& other) const {
-        // Проверка совместимости размеров
-        if (m != other.m || n != other.n) {
+    Matrix<T>* operator+(const Matrix<T>& other) const override {
+        const DenseMatrix<T>* otherDense = dynamic_cast<const DenseMatrix<T>*>(&other);
+        if (!otherDense || m != otherDense->m || n != otherDense->n) {
             throw std::runtime_error("Matrices have incompatible dimensions for addition");
         }
 
-        DenseMatrix result(m, n); // Результирующая матрица
+        DenseMatrix<T>* result = new DenseMatrix<T>(m, n); // Создаем результирующую матрицу
         for (size_t i = 0; i < m; ++i) {
             for (size_t j = 0; j < n; ++j) {
-                result(i, j) = (*this)(i, j) + other(i, j); // Сложение соответствующих элементов
+                (*result)(i, j) = (*this)(i, j) + otherDense->operator()(i, j); // Сложение соответствующих элементов
             }
         }
-        return result; // Возврат результата
+        return result; // Возвращаем указатель на результат
     }
 
+
     // Оператор вычитания
-    DenseMatrix operator-(const DenseMatrix& other) const {
-        // Проверка совместимости размеров
-        if (m != other.m || n != other.n) {
+    Matrix<T>* operator-(const Matrix<T>& other) const override {
+        const DenseMatrix<T>* otherDense = dynamic_cast<const DenseMatrix<T>*>(&other);
+        if (!otherDense || m != otherDense->m || n != otherDense->n) {
             throw std::runtime_error("Matrices have incompatible dimensions for subtraction");
         }
 
-        DenseMatrix result(m, n); // Результирующая матрица
+        DenseMatrix<T>* result = new DenseMatrix<T>(m, n); // Создаем результирующую матрицу
         for (size_t i = 0; i < m; ++i) {
             for (size_t j = 0; j < n; ++j) {
-                result(i, j) = (*this)(i, j) - other(i, j); // Вычитание соответствующих элементов
+                (*result)(i, j) = (*this)(i, j) - otherDense->operator()(i, j); // Вычитание соответствующих элементов
             }
         }
-
-        return result; // Возврат результата
+        return result; // Возвращаем указатель на результат
     }
 
     // Оператор умножения
-    DenseMatrix operator*(const DenseMatrix& other) const {
-        // Проверка совместимости размеров для умножения
-        if (n != other.m) {
+    Matrix<T>* operator*(const Matrix<T>& other) const override {
+        const DenseMatrix<T>* otherDense = dynamic_cast<const DenseMatrix<T>*>(&other);
+        if ((!otherDense || m != otherDense->m || n != otherDense->n)) {
             throw std::runtime_error("Matrices have incompatible dimensions for multiplication");
         }
 
-        DenseMatrix result(m, other.n); // Результирующая матрица
+        DenseMatrix<T>* result = new DenseMatrix<T>(m, otherDense->n); // Создаем результирующую матрицу
         for (size_t i = 0; i < m; ++i) {
-            for (size_t j = 0; j < other.n; ++j) {
-                result(i, j) = 0; // Инициализация с нуля
+            for (size_t j = 0; j < otherDense->n; ++j) {
+                (*result)(i, j) = 0; // Инициализация с нуля
                 for (size_t k = 0; k < n; ++k) {
-                    result(i, j) += (*this)(i, k) * other(k, j); // Умножение и накопление результата
+                    (*result)(i, j) += (*this)(i, k) * otherDense->operator()(k, j); // Умножение и накопление результата
                 }
             }
         }
-        return result; // Возврат результата
+        return result; // Возвращаем указатель на результат
     }
 
 };

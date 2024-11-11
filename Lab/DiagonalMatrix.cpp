@@ -43,6 +43,7 @@ template <typename T>
 Matrix<T>* DiagonalMatrix<T>::operator+(const Matrix<T>& other) const {
     const DiagonalMatrix<T>* otherDiagonal = dynamic_cast<const DiagonalMatrix<T>*>(&other);
 
+    // Проверяем совместимость размеров
     if (!otherDiagonal || m != otherDiagonal->m || n != otherDiagonal->n) {
         throw std::runtime_error("Matrices have incompatible dimensions for addition");
     }
@@ -53,6 +54,7 @@ Matrix<T>* DiagonalMatrix<T>::operator+(const Matrix<T>& other) const {
     }
     return result; // Возвращаем указатель на результат
 }
+
 
 // Оператор вычитания
 template <typename T>
