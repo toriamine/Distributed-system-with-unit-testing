@@ -1,58 +1,45 @@
-#pragma once // Защита от многократного подключения файла
-
+#pragma once
 #include "Matrix.h"
 #include <iostream>
 #include <vector>
-#include <exception> // Для обработки исключений
+#include <stdexcept> // Для обработки исключений
 
 // Шаблонный класс для диагональных матриц
 template <typename T>
 class DiagonalMatrix : public Matrix<T> {
 private:
-    size_t m, n; // Количество строк (m) и столбцов (n) в матрице
-    std::vector<T> diagonal; // Вектор для хранения элементов главной диагонали
+    std::vector<T> diagonalElements; // Вектор для хранения элементов главной диагонали
 
 public:
-    // Конструктор
-    DiagonalMatrix(size_t rows, size_t cols);
+    DiagonalMatrix(std::initializer_list<T> list) : diagonalElements(list) {}
+    DiagonalMatrix(size_t size) : diagonalElements(size, T(0)) {}
 
-    // Оператор доступа к элементу (модифицируемый)
+    // Доступ к элементам матрицы
     T& operator()(size_t i, size_t j);
-
-    // Оператор доступа к элементу (константный)
     const T& operator()(size_t i, size_t j) const;
 
-    // Метод для получения количества строк
-    size_t rows() const override;
+    size_t rows() const { return diagonalElements.size(); }
+    size_t cols() const { return diagonalElements.size(); }
 
-    // Метод для получения количества столбцов
-    size_t cols() const override;
+    // Операторы сложения, вычитания и умножения
+    DiagonalMatrix<T> operator+(const DiagonalMatrix<T>& other) const;
+    DiagonalMatrix<T> operator-(const DiagonalMatrix<T>& other) const;
+    DiagonalMatrix<T> operator*(const DiagonalMatrix<T>& other) const;
 
-    // Оператор сложения
-    Matrix<T>* operator+(const Matrix<T>& other) const override;
-
-    // Оператор вычитания
-    Matrix<T>* operator-(const Matrix<T>& other) const override;
-
-    // Оператор умножения
-    Matrix<T>* operator*(const Matrix<T>& other) const override;
-
-    // Оператор вывода в поток
-    friend std::ostream& operator<<(std::ostream& os, const DiagonalMatrix<T>& matrix) {
-        for (size_t i = 0; i < matrix.rows(); ++i) {
-            for (size_t j = 0; j < matrix.cols(); ++j) {
+    void Print() const {
+        std::cout << "Diagonal Matrix:\n";
+        for (size_t i = 0; i < rows(); ++i) {
+            for (size_t j = 0; j < cols(); ++j) {
                 if (i == j) {
-                    os << matrix(i, j) << " "; // Выводим только диагональные элементы
+                    std::cout << diagonalElements[i] << " ";
                 }
                 else {
-                    os << "0 "; // Остальные элементы равны нулю
+                    std::cout << "0 ";
                 }
             }
-            os << std::endl; // Переход на новую строку
+            std::cout << std::endl;
         }
-        return os; // Возвращаем поток
     }
 
-    // Виртуальный деструктор
-    ~DiagonalMatrix() override = default;
+    ~DiagonalMatrix() = default; // Деструктор
 };

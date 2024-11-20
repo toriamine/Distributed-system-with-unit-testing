@@ -1,90 +1,72 @@
 #include "DiagonalMatrix.h"
 
-// Конструктор
-template <typename T>
-DiagonalMatrix<T>::DiagonalMatrix(size_t rows, size_t cols) : m(rows), n(cols) {
-    diagonal.resize(std::min(m, n), 0); // Инициализация вектора диагонали
-}
-
-// Оператор доступа к элементу (модифицируемый)
+// Реализация операторов
 template <typename T>
 T& DiagonalMatrix<T>::operator()(size_t i, size_t j) {
-    if (i != j) {
-        static T zero = 0; // Статическая переменная для возвращения нуля
-        return zero; // Возвращаем 0
+    if (i >= rows() || j >= cols()) {
+        throw std::out_of_range("Index out of range");
     }
-    return diagonal[i]; // Возвращаем элемент диагонали
+    if (i == j) {
+        return diagonalElements[i]; // Возвращает ссылку на диагональный элемент
+    }
+    else {
+        throw std::out_of_range("Accessing non-diagonal element"); // Исключение для доступа к недоступным элементам
+    }
 }
 
-// Оператор доступа к элементу (константный)
 template <typename T>
 const T& DiagonalMatrix<T>::operator()(size_t i, size_t j) const {
-    if (i != j) {
-        static T zero = 0; // Статическая переменная для возвращения нуля
-        return zero; // Возвращаем 0
+    if (i >= rows() || j >= cols()) {
+        throw std::out_of_range("Index out of range");
     }
-    return diagonal[i]; // Возвращаем элемент диагонали
+    if (i == j) {
+        return diagonalElements[i]; // Возвращает ссылку на диагональный элемент
+    }
+    else {
+        throw std::out_of_range("Accessing non-diagonal element"); // Исключение для доступа к недоступным элементам
+    }
 }
 
-// Метод для получения количества строк
 template <typename T>
-size_t DiagonalMatrix<T>::rows() const {
-    return m; // Возвращаем количество строк
+DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) const {
+    if (rows() != other.rows() || cols() != other.cols()) {
+        throw std::invalid_argument("Matrices must have the same dimensions for addition.");
+    }
+
+    DiagonalMatrix<T> result(rows());
+    for (size_t i = 0; i < rows(); ++i) {
+        result(i, i) = diagonalElements[i] + other.diagonalElements[i];
+    }
+    return result;
 }
 
-// Метод для получения количества столбцов
 template <typename T>
-size_t DiagonalMatrix<T>::cols() const {
-    return n; // Возвращаем количество столбцов
+DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) const {
+    if (rows() != other.rows() || cols() != other.cols()) {
+        throw std::invalid_argument("Matrices must have the same dimensions for subtraction.");
+    }
+
+    DiagonalMatrix<T> result(rows());
+    for (size_t i = 0; i < rows(); ++i) {
+        result(i, i) = diagonalElements[i] - other.diagonalElements[i];
+    }
+    return result;
 }
 
-// Оператор сложения
 template <typename T>
-Matrix<T>* DiagonalMatrix<T>::operator+(const Matrix<T>& other) const {
-    const DiagonalMatrix<T>* otherDiagonal = dynamic_cast<const DiagonalMatrix<T>*>(&other);
+DiagonalMatrix<T> DiagonalMatrix<T>::operator*(const DiagonalMatrix<T>& other) const {
 
-    // Проверяем совместимость размеров
-    if (!otherDiagonal || m != otherDiagonal->m || n != otherDiagonal->n) {
-        throw std::runtime_error("Matrices have incompatible dimensions for addition");
+    if (cols() != other.rows()) { // Умножение возможно только если cols первого == rows второго
+        throw std::invalid_argument("Number of columns in the first matrix must match number of rows in the second.");
     }
 
-    DiagonalMatrix<T>* result = new DiagonalMatrix<T>(m, n); // Создаем результирующую матрицу
-    for (size_t i = 0; i < std::min(m, n); ++i) {
-        (*result)(i, i) = (*this)(i, i) + (*otherDiagonal)(i, i); // Сложение соответствующих диагональных элементов
+    DiagonalMatrix<T> result(rows());
+    for (size_t i = 0; i < rows(); ++i) {
+        result(i, i) = diagonalElements[i] * other.diagonalElements[i];
     }
-    return result; // Возвращаем указатель на результат
+    return result;
 }
 
-
-// Оператор вычитания
-template <typename T>
-Matrix<T>* DiagonalMatrix<T>::operator-(const Matrix<T>& other) const {
-    const DiagonalMatrix<T>* otherDiagonal = dynamic_cast<const DiagonalMatrix<T>*>(&other);
-    if (!otherDiagonal || m != otherDiagonal->m || n != otherDiagonal->n) {
-        throw std::runtime_error("Matrices have incompatible dimensions for subtraction");
-    }
-
-    DiagonalMatrix<T>* result = new DiagonalMatrix<T>(m, n); // Создаем результирующую матрицу
-    for (size_t i = 0; i < std::min(m, n); ++i) {
-        (*result)(i, i) = (*this)(i, i) - (*otherDiagonal)(i, i); // Вычитание соответствующих диагональных элементов
-    }
-    return result; // Возвращаем указатель на результат
-}
-
-// Оператор умножения
-template <typename T>
-Matrix<T>* DiagonalMatrix<T>::operator*(const Matrix<T>& other) const {
-    const DiagonalMatrix<T>* otherDiagonal = dynamic_cast<const DiagonalMatrix<T>*>(&other);
-    if (!otherDiagonal || n != otherDiagonal->m) {
-        throw std::runtime_error("Matrices have incompatible dimensions for multiplication");
-    }
-
-    DiagonalMatrix<T>* result = new DiagonalMatrix<T>(m, otherDiagonal->n); // Создаем результирующую матрицу
-    for (size_t i = 0; i < std::min(m, otherDiagonal->n); ++i) {
-        (*result)(i, i) = (*this)(i, i) * (*otherDiagonal)(i, i); // Умножение соответствующих диагональных элементов
-    }
-    return result; // Возвращаем указатель на результат
-}
 
 // Явная инстанциация для типов
 // Явная инстанциация для стандартных числовых типов
