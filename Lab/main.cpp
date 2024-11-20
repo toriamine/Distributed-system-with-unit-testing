@@ -116,70 +116,132 @@ int main(int argc, char* argv[]) {
         std::cout << "Node not found" << std::endl;
     }
 
-
+        /*
         // Создать плотную матрицу 3x3
         DenseMatrix<double> denseMatrix = {
             {1.0, 2.0, 3.0},
-            {4.0, 5.0, 6.0},
+            {4.0, 5.0, 16.0},
             {7.0, 8.0, 9.0}
         };
-        std::cout << "Dense Matrix:\n" << denseMatrix << std::endl;
+        std::cout << "Dense Matrix:\n";
+        denseMatrix.Print();
 
         // Создать диагональную матрицу 3x3
-        DiagonalMatrix<double> diagonalMatrix(3, 3);
+        DiagonalMatrix<double> diagonalMatrix(3);
         diagonalMatrix(0, 0) = 1.0;
         diagonalMatrix(1, 1) = 2.0;
         diagonalMatrix(2, 2) = 3.0;
-        std::cout << "Diagonal Matrix:\n" << diagonalMatrix << std::endl;
+        std::cout << "Diagonal Matrix:\n";
+        diagonalMatrix.Print();
 
-        // Создать блочную матрицу с 2x2 блоками
+        // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
         BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2);
-        // Инициализировать блочную матрицу
-        blockMatrix(0, 0) = DenseMatrix<double>{ {1, 2}, {3, 4} };
-        blockMatrix(0, 1) = DenseMatrix<double>{ {5, 6}, {7, 8} };
-        blockMatrix(1, 0) = DenseMatrix<double>{ {9, 10}, {11, 12} };
-        blockMatrix(1, 1) = DenseMatrix<double>{ {13, 14}, {15, 16} };
-        std::cout << "Block Matrix:\n" << blockMatrix << std::endl;
 
-        // Вычислить произведение блочных матриц
-        BlockMatrix<double, DenseMatrix>* productMatrix = static_cast<BlockMatrix<double, DenseMatrix>*>(blockMatrix + blockMatrix);
-        std::cout << "Product of Block Matrices:\n" << productMatrix << std::endl;
-        delete productMatrix;
+        // Установим значения в блоки
+        // Блок (0, 0):
+        // Установим значения в блоки
+        // Блок (0, 0):
+        blockMatrix.block(0, 0)(0, 0) = 1.0;
+        blockMatrix.block(0, 0)(0, 1) = 2.0;
+        blockMatrix.block(0, 0)(1, 0) = 3.0;
+        blockMatrix.block(0, 0)(1, 1) = 4.0;
 
-        // Вычислить произведение Кронекера блочных матриц
-        BlockMatrix<double, DenseMatrix> kroneckerMatrix = blockMatrix.KroneckerProduct(blockMatrix);
-        std::cout << "Kronecker Product of Block Matrices:\n" << kroneckerMatrix << std::endl;
+        // Блок (0, 1):
+        blockMatrix.block(0, 1)(0, 0) = 5.0;
+        blockMatrix.block(0, 1)(0, 1) = 6.0;
+        blockMatrix.block(0, 1)(1, 0) = 7.0;
+        blockMatrix.block(0, 1)(1, 1) = 8.0;
+        */
+        // Создаем заполненные матрицы 2x2
+        DenseMatrix<int> denseA(2, 2);
+        denseA(0, 0) = 1; denseA(0, 1) = 2;
+        denseA(1, 0) = 3; denseA(1, 1) = 4;
 
-        // Пример блочной матрицы с диагональными матрицами
-        BlockMatrix<double, DiagonalMatrix> blockDiagonalMatrix(2, 2, 2, 2);
-        blockDiagonalMatrix(0, 0) = DiagonalMatrix<double>(2, 2);
-        blockDiagonalMatrix(0, 0)(0, 0) = 1.0;
-        blockDiagonalMatrix(0, 0)(1, 1) = 2.0;
+        DenseMatrix<int> denseB(2, 2);
+        denseB(0, 0) = 5; denseB(0, 1) = 6;
+        denseB(1, 0) = 7; denseB(1, 1) = 8;
 
-        blockDiagonalMatrix(0, 1) = DiagonalMatrix<double>(2, 2);
-        blockDiagonalMatrix(0, 1)(0, 0) = 3.0;
-        blockDiagonalMatrix(0, 1)(1, 1) = 4.0;
+        std::cout << "Dense Matrix A:\n";
+        denseA.Print();
+        std::cout << "\nDense Matrix B:\n";
+        denseB.Print();
 
-        blockDiagonalMatrix(1, 0) = DiagonalMatrix<double>(2, 2);
-        blockDiagonalMatrix(1, 0)(0, 0) = 5.0;
-        blockDiagonalMatrix(1, 0)(1, 1) = 6.0;
+        // Операции с плотными матрицами
+        auto denseC = DenseMatrix<int>(denseA + denseB);
+        std::cout << "\nA + B:\n";
+        denseC.Print();
 
-        blockDiagonalMatrix(1, 1) = DiagonalMatrix<double>(2, 2);
-        blockDiagonalMatrix(1, 1)(0, 0) = 7.0;
-        blockDiagonalMatrix(1, 1)(1, 1) = 8.0;
+        auto denseD = DenseMatrix<int>(denseA - denseB);
+        std::cout << "\nA - B:\n";
+        denseD.Print();
 
-        std::cout << "Block Diagonal Matrix:\n" << blockDiagonalMatrix << std::endl;
+        auto denseE = DenseMatrix<int>(denseA * denseB);
+        std::cout << "\nA * B:\n";
+        denseE.Print();
 
-        // Вычислить произведение блочных диагональных матриц
-        BlockMatrix<double, DenseMatrix>* productDiagonalMatrix = static_cast<BlockMatrix<double, DenseMatrix>*>(blockDiagonalMatrix + blockDiagonalMatrix);
-        std::cout << "Product of Block Diagonal Matrices:\n" << productDiagonalMatrix << std::endl;
-        delete productDiagonalMatrix;
+        // Создаем диагональные матрицы
+        DiagonalMatrix<int> diagA(2);
+        diagA(0, 0) = 1; diagA(1, 1) = 3;
 
-        // Вычислить произведение Кронекера блочных диагональных матриц
-        BlockMatrix<double, DiagonalMatrix> kroneckerDiagonalMatrix = blockDiagonalMatrix.KroneckerProduct(blockDiagonalMatrix);
-        std::cout << "Kronecker Product of Block Diagonal Matrices:\n" << kroneckerDiagonalMatrix << std::endl;
+        DiagonalMatrix<int> diagB(2);
+        diagB(0, 0) = 2; diagB(1, 1) = 4;
+
+        std::cout << "\nDiagonal Matrix A:\n";
+        diagA.Print();
+        std::cout << "\nDiagonal Matrix B:\n";
+        diagB.Print();
+
+        // Операции с диагональными матрицами
+        auto diagC = DiagonalMatrix<int>(diagA + diagB);
+        std::cout << "\nA + B:\n";
+        diagC.Print();
+
+        auto diagD = DiagonalMatrix<int>(diagA - diagB);
+        std::cout << "\nA - B:\n";
+        diagD.Print();
+
+        auto diagE = DiagonalMatrix<int>(diagA * diagB);
+        std::cout << "\nA * B:\n";
+        diagE.Print();
+
+        // Создаем блочные матрицы
+        BlockMatrix<int, DenseMatrix> blockMatrixA(1, 1, 2, 2);
+        blockMatrixA.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixA(0, 0) = 1; blockMatrixA(0, 1) = 2;
+        blockMatrixA(1, 0) = 3; blockMatrixA(1, 1) = 4;
+
+        BlockMatrix<int, DenseMatrix> blockMatrixB(1, 1, 2, 2);
+        blockMatrixB.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixB(0, 0) = 5; blockMatrixB(0, 1) = 6;
+        blockMatrixB(1, 0) = 7; blockMatrixB(1, 1) = 8;
+
+        std::cout << "\nBlock Matrix A:\n";
+        blockMatrixA.Print();
+        std::cout << "\nBlock Matrix B:\n";
+        blockMatrixB.Print();
+
+        // Операции с блочными матрицами
+        auto blockC = blockMatrixA + blockMatrixB;
+        std::cout << "\nBlock A + Block B:\n";
+        blockC.Print();
+
+        auto blockD = blockMatrixA - blockMatrixB;
+        std::cout << "\nBlock A - Block B:\n";
+        blockD.Print();
+
+        auto blockE = blockMatrixA * blockMatrixB;
+        std::cout << "\nBlock A * Block B:\n";
+        blockE.Print();
+
+        // Произведение Кронекера
+        /*auto kroneckerResult = blockMatrixA.kroneckerProduct(blockMatrixB);
+        std::cout << "\nKronecker Product of Block A and Block B:\n";
+        kroneckerResult.Print();*/
 
 
+        // Выводим всю блочную матрицу
+        /*std::cout << "Block Matrix:" << std::endl;
+        blockMatrix.Print();*/
 
         // Настройка параметров векторов
         VectorParams vparams1;
