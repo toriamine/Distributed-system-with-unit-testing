@@ -40,13 +40,12 @@ BOOST_AUTO_TEST_CASE(DenseAdditionTest) {
     DenseMatrix<double> mat1{ {1, 2}, {3, 4} };
     DenseMatrix<double> mat2{ {5, 6}, {7, 8} };
     // Сложение матриц
-    DenseMatrix<double>* result = static_cast<DenseMatrix<double>*>(mat1 + mat2);
+    auto result = mat1 + mat2;
 
     // Проверяем значения элементов результирующей матрицы
-    BOOST_CHECK_EQUAL((*result)(0, 0), 6); // 1 + 5 = 6
-    BOOST_CHECK_EQUAL((*result)(1, 1), 12); // 4 + 8 = 12
+    BOOST_CHECK_EQUAL(result(0, 0), 6); // 1 + 5 = 6
+    BOOST_CHECK_EQUAL(result(1, 1), 12); // 4 + 8 = 12
 
-    delete result;
 }
 
 // Тестирует операцию вычитания матриц
@@ -55,13 +54,12 @@ BOOST_AUTO_TEST_CASE(DenseSubtractionTest) {
     DenseMatrix<double> mat1{ {5, 6}, {7, 8} };
     DenseMatrix<double> mat2{ {1, 2}, {3, 4} };
     // Вычитание матриц
-    DenseMatrix<double>* result = static_cast<DenseMatrix<double>*>(mat1 - mat2);
+    auto result = mat1 - mat2;
 
     // Проверяем значения элементов результирующей матрицы
-    BOOST_CHECK_EQUAL((*result)(0, 0), 4); // 5 - 1 = 4
-    BOOST_CHECK_EQUAL((*result)(1, 1), 4); // 8 - 4 = 4
+    BOOST_CHECK_EQUAL(result(0, 0), 4); // 5 - 1 = 4
+    BOOST_CHECK_EQUAL(result(1, 1), 4); // 8 - 4 = 4
 
-    delete result;
 }
 
 // Тестирует операцию умножения матриц
@@ -70,13 +68,12 @@ BOOST_AUTO_TEST_CASE(DenseMultiplicationTest) {
     DenseMatrix<double> mat1{ {1, 2}, {3, 4} };
     DenseMatrix<double> mat2{ {2, 0}, {1, 2} };
     // Умножение матриц
-    DenseMatrix<double>* result = static_cast<DenseMatrix<double>*>(mat1 * mat2);
+    auto result = mat1 * mat2;
 
     // Проверяем значения элементов результирующей матрицы
-    BOOST_CHECK_EQUAL((*result)(0, 0), 4); // 1*2 + 2*1 = 4
-    BOOST_CHECK_EQUAL((*result)(1, 1), 8); // 3*0 + 4*2 = 8
+    BOOST_CHECK_EQUAL(result(0, 0), 4); // 1*2 + 2*1 = 4
+    BOOST_CHECK_EQUAL(result(1, 1), 8); // 3*0 + 4*2 = 8
 
-    delete result;
 }
 
 /*
