@@ -7,48 +7,89 @@ BOOST_AUTO_TEST_SUITE(BlockMatrixTests) // Начало набора тестов для блочных матр
 BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
     BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
 
-    // Установим значения в блоки
+    BlockMatrix<int, DenseMatrix> blockMatrixA(2, 2, 2, 2);
+
+    // Создаем блочные матрицы 2x2 блоков, каждый из которых 2x2 элементы
+        // Установим значения в блоки
     // Блок (0, 0):
     // [ 1.0, 2.0 ]
     // [ 3.0, 4.0 ]
-    blockMatrix(0, 0)(0, 0) = 1.0;
-    blockMatrix(0, 0)(0, 1) = 2.0;
-    blockMatrix(0, 0)(1, 0) = 3.0;
-    blockMatrix(0, 0)(1, 1) = 4.0;
+    
+    blockMatrixA.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+    blockMatrixA(0, 0) = 1; blockMatrixA(0, 1) = 2;
+    blockMatrixA(1, 0) = 3; blockMatrixA(1, 1) = 4;
 
     // Блок (0, 1):
     // [ 5.0, 6.0 ]
     // [ 7.0, 8.0 ]
-    blockMatrix(0, 1)(0, 0) = 5.0;
-    blockMatrix(0, 1)(0, 1) = 6.0;
-    blockMatrix(0, 1)(1, 0) = 7.0;
-    blockMatrix(0, 1)(1, 1) = 8.0;
+
+    blockMatrixA.setBlock(0, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixA(0, 2) = 5; blockMatrixA(0, 3) = 6;
+    blockMatrixA(1, 2) = 7; blockMatrixA(1, 3) = 8;
+
 
     // Блок (1, 0):
     // [ 9.0, 10.0 ]
     // [ 11.0, 12.0 ]
-    blockMatrix(1, 0)(0, 0) = 9.0;
-    blockMatrix(1, 0)(0, 1) = 10.0;
-    blockMatrix(1, 0)(1, 0) = 11.0;
-    blockMatrix(1, 0)(1, 1) = 12.0;
+    blockMatrixA.setBlock(1, 0, new DenseMatrix<int>(2, 2));
+    blockMatrixA(2, 0) = 9; blockMatrixA(2, 1) = 10;
+    blockMatrixA(3, 0) = 11; blockMatrixA(3, 1) = 12;
 
     // Блок (1, 1):
     // [ 13.0, 14.0 ]
     // [ 15.0, 16.0 ]
-    blockMatrix(1, 1)(0, 0) = 13.0;
-    blockMatrix(1, 1)(0, 1) = 14.0;
-    blockMatrix(1, 1)(1, 0) = 15.0;
-    blockMatrix(1, 1)(1, 1) = 16.0;
+    blockMatrixA.setBlock(1, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixA(2, 2) = 13; blockMatrixA(2, 3) = 14;
+    blockMatrixA(3, 2) = 15; blockMatrixA(3, 3) = 16;
+
 
     // Проверка доступа к блокам и их элементам
-    BOOST_CHECK_EQUAL(blockMatrix(0, 0)(0, 0), 1.0); // Проверка первого элемента первого блока
-    BOOST_CHECK_EQUAL(blockMatrix(0, 1)(1, 0), 7.0); // Проверка второго элемента второго блока
-    BOOST_CHECK_EQUAL(blockMatrix(1, 1)(0, 1), 14.0); // Проверка второго элемента четвертого блока
+    BOOST_CHECK_EQUAL(blockMatrixA(0, 0), 1);   //Тест первого элемента первой матрицы
+    BOOST_CHECK_EQUAL(blockMatrixA(0, 3), 6);   // Тест последнего элемента первой строки
+    BOOST_CHECK_EQUAL(blockMatrixA(1, 2), 7);   // Тест элемента из второго блока
+    BOOST_CHECK_EQUAL(blockMatrixA(2, 1), 10);  // Тест элемента второго ряда третьего блока
+    BOOST_CHECK_EQUAL(blockMatrixA(3, 3), 16);  // Тест последнего элемента
 }
 
 BOOST_AUTO_TEST_CASE(BlockMatrixTestAddition) {
     BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
     BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+
+    a.setBlock(0, 0, new DenseMatrix<double>(2, 2));
+    a(0, 0) = 1; a(0, 1) = 2;
+    a(1, 0) = 3; blockMatrixA(1, 1) = 4;
+
+    blockMatrixA.setBlock(0, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixA(0, 2) = 5; blockMatrixA(0, 3) = 6;
+    blockMatrixA(1, 2) = 7; blockMatrixA(1, 3) = 8;
+
+    blockMatrixA.setBlock(1, 0, new DenseMatrix<int>(2, 2));
+    blockMatrixA(2, 0) = 9; blockMatrixA(2, 1) = 10;
+    blockMatrixA(3, 0) = 11; blockMatrixA(3, 1) = 12;
+
+    blockMatrixA.setBlock(1, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixA(2, 2) = 13; blockMatrixA(2, 3) = 14;
+    blockMatrixA(3, 2) = 15; blockMatrixA(3, 3) = 16;
+
+    std::cout << "Block Matrix A:\n";
+    blockMatrixA.Print();
+
+    BlockMatrix<int, DenseMatrix> blockMatrixB(2, 2, 2, 2);
+    blockMatrixB.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+    blockMatrixB(0, 0) = 1; blockMatrixB(0, 1) = 1;
+    blockMatrixB(1, 0) = 1; blockMatrixB(1, 1) = 1;
+
+    blockMatrixB.setBlock(0, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixB(0, 2) = 2; blockMatrixB(0, 3) = 2;
+    blockMatrixB(1, 2) = 2; blockMatrixB(1, 3) = 2;
+
+    blockMatrixB.setBlock(1, 0, new DenseMatrix<int>(2, 2));
+    blockMatrixB(2, 0) = 3; blockMatrixB(2, 1) = 3;
+    blockMatrixB(3, 0) = 3; blockMatrixB(3, 1) = 3;
+
+    blockMatrixB.setBlock(1, 1, new DenseMatrix<int>(2, 2));
+    blockMatrixB(2, 2) = 4; blockMatrixB(2, 3) = 4;
+    blockMatrixB(3, 2) = 4; blockMatrixB(3, 3) = 4;
 
     // Заполнение блоков матрицы a
     // Блок (0, 0):

@@ -9,10 +9,26 @@ template <typename T>
 class DiagonalMatrix : public Matrix<T> {
 private:
     std::vector<T> diagonalElements; // Вектор для хранения элементов главной диагонали
-
+    std::vector<std::vector<T>> data;// Полная матрица с нулями на не-диагональных местах
 public:
-    DiagonalMatrix(std::initializer_list<T> list) : diagonalElements(list) {}
-    DiagonalMatrix(size_t size) : diagonalElements(size, T(0)) {}
+    // Конструктор, который принимает список значений для диагонали
+    DiagonalMatrix(std::initializer_list<T> list)
+        : diagonalElements(list), data(list.size(), std::vector<T>(list.size(), T(0))) {
+        size_t index = 0;
+        for (auto& val : list) {
+            data[index][index] = val;  // Заполните диагональные элементы
+            ++index;
+        }
+    }
+
+    // Конструктор, который принимает размер и нулевую инициализацию
+    DiagonalMatrix(size_t size)
+        : diagonalElements(size, T(0)), data(size, std::vector<T>(size, T(0))) {
+        for (size_t i = 0; i < size; ++i) {
+            data[i][i] = T(0);  // Все элементы по умолчанию нули
+        }
+    }
+
 
     // Доступ к элементам матрицы
     T& operator()(size_t i, size_t j);
@@ -30,12 +46,7 @@ public:
         std::cout << "Diagonal Matrix:\n";
         for (size_t i = 0; i < rows(); ++i) {
             for (size_t j = 0; j < cols(); ++j) {
-                if (i == j) {
-                    std::cout << diagonalElements[i] << " ";
-                }
-                else {
-                    std::cout << "0 ";
-                }
+                std::cout << data[i][j] << " ";
             }
             std::cout << std::endl;
         }

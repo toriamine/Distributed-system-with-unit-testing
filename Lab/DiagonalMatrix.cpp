@@ -1,17 +1,13 @@
 #include "DiagonalMatrix.h"
 
 // Реализация операторов
+   // Доступ к элементам матрицы
 template <typename T>
 T& DiagonalMatrix<T>::operator()(size_t i, size_t j) {
     if (i >= rows() || j >= cols()) {
         throw std::out_of_range("Index out of range");
     }
-    if (i == j) {
-        return diagonalElements[i]; // Возвращает ссылку на диагональный элемент
-    }
-    else {
-        throw std::out_of_range("Accessing non-diagonal element"); // Исключение для доступа к недоступным элементам
-    }
+    return data[i][j];
 }
 
 template <typename T>
@@ -19,12 +15,7 @@ const T& DiagonalMatrix<T>::operator()(size_t i, size_t j) const {
     if (i >= rows() || j >= cols()) {
         throw std::out_of_range("Index out of range");
     }
-    if (i == j) {
-        return diagonalElements[i]; // Возвращает ссылку на диагональный элемент
-    }
-    else {
-        throw std::out_of_range("Accessing non-diagonal element"); // Исключение для доступа к недоступным элементам
-    }
+    return data[i][j];
 }
 
 template <typename T>
