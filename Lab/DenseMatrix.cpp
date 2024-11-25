@@ -73,8 +73,12 @@ size_t DenseMatrix<T>::cols() const {
 // Оператор сложения
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator+(const DenseMatrix<T>& other) const {
-    if (rows_ != other.rows_ || cols_ != other.cols_) {
-        throw std::invalid_argument("Matrices must have the same dimensions for addition.");
+    // Проверка на несовместимые размеры
+    if (rows() != other.rows()) {
+        throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
+    }
+    if (cols() != other.cols()) {
+        throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
     DenseMatrix<T> result(rows_, cols_);
@@ -89,8 +93,12 @@ DenseMatrix<T> DenseMatrix<T>::operator+(const DenseMatrix<T>& other) const {
 // Оператор вычитания
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator-(const DenseMatrix<T>& other) const {
-    if (rows_ != other.rows_ || cols_ != other.cols_) {
-        throw std::invalid_argument("Matrices must have the same dimensions for subtraction.");
+    // Проверка на несовместимые размеры
+    if (rows() != other.rows()) {
+        throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
+    }
+    if (cols() != other.cols()) {
+        throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
     DenseMatrix<T> result(rows_, cols_);
@@ -105,8 +113,12 @@ DenseMatrix<T> DenseMatrix<T>::operator-(const DenseMatrix<T>& other) const {
 // Оператор умножения
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator*(const DenseMatrix<T>& other) const {
-    if (cols_ != other.rows_) {
-        throw std::invalid_argument("Number of columns in the first matrix must match the number of rows in the second.");
+    // Проверка на несовместимые размеры
+    if (rows() != other.rows()) {
+        throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
+    }
+    if (cols() != other.cols()) {
+        throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
     DenseMatrix<T> result(rows_, other.cols_);

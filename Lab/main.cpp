@@ -218,9 +218,9 @@ int main(int argc, char* argv[]) {
         std::cout << "\nA - B:\n";
         blockMatrixD.Print();
 
-        BlockMatrix<int, DenseMatrix> blockMatrixE = blockMatrixA * blockMatrixB;
+        /*BlockMatrix<int, DenseMatrix> blockMatrixE = blockMatrixA * blockMatrixB;
         std::cout << "\nA * B:\n";
-        blockMatrixE.Print();
+        blockMatrixE.Print();*/
 
         // Вызов метода kroneckerProduct
         auto kroneckerResult = blockMatrixA.kroneckerProduct(blockMatrixB);
@@ -258,16 +258,67 @@ int main(int argc, char* argv[]) {
         std::cout << "\nA - B:\n";
         blockMatrixD1.Print();
 
-        BlockMatrix<int, DiagonalMatrix> blockMatrixE1 = blockMatrixA1 * blockMatrixB1;
+        /*BlockMatrix<int, DiagonalMatrix> blockMatrixE1 = blockMatrixA1 * blockMatrixB1;
         std::cout << "\nA * B:\n";
-        blockMatrixE1.Print();
+        blockMatrixE1.Print();*/
 
         auto kroneckerResult1 = blockMatrixA1.kroneckerProduct(blockMatrixB1);
         std::cout << "\nKronecker Product of A and B:\n";
         kroneckerResult1.Print();
 
 
-        //// Настройка параметров векторов
+        ////Создаем блочные матрицы 2x2 блоков
+        //BlockMatrix<int, DenseMatrix> A(2, 2, 2, 2); // 2 блока по 2 строки, 2 блока по 2 столбца
+        //BlockMatrix<int, DenseMatrix> B(2, 2, 2, 2); // 2 блока по 2 строки, 2 блока по 2 столбца
+
+        //// Заполнение матрицы A
+        //A.setBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок A[0][0]
+        //A(0, 0) = 1; A(0, 1) = 2;
+        //A(1, 0) = 3; A(1, 1) = 4;
+
+        //A.setBlock(0, 1, new DenseMatrix<int>(2, 2)); // Блок A[0][1]
+        //A(0, 2) = 5; A(0, 3) = 6;
+        //A(1, 2) = 7; A(1, 3) = 8;
+
+        //A.setBlock(1, 0, new DenseMatrix<int>(2, 2)); // Блок A[1][0]
+        //A(2, 0) = 9; A(2, 1) = 10;
+        //A(3, 0) = 11; A(3, 1) = 12;
+
+        //A.setBlock(1, 1, new DenseMatrix<int>(2, 2)); // Блок A[1][1]
+        //A(2, 2) = 13; A(2, 3) = 14;
+        //A(3, 2) = 15; A(3, 3) = 16;
+
+
+        //std::cout << "Block Diagonal Matrix A:\n";
+        //A.Print();
+
+        //// Заполнение матрицы B
+        //B.setBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок B[0][0]
+        //B(0, 0) = 0; B(0, 1) = 1;
+        //B(1, 0) = 2; B(1, 1) = 3;
+
+        //B.setBlock(0, 1, new DenseMatrix<int>(2, 2)); // Блок B[0][1]
+        //B(0, 2) = 4; B(0, 3) = 5;
+        //B(1, 2) = 6; B(1, 3) = 7;
+
+        //B.setBlock(1, 0, new DenseMatrix<int>(2, 2)); // Блок B[1][0]
+        //B(2, 0) = 8; B(2, 1) = 9;
+        //B(3, 0) = 10; B(3, 1) = 11;
+
+        //B.setBlock(1, 1, new DenseMatrix<int>(2, 2)); // Блок B[1][1]
+        //B(2, 2) = 12; B(2, 3) = 13;
+        //B(3, 2) = 14; B(3, 3) = 15;
+
+        //std::cout << "Block Diagonal Matrix B:\n";
+        //B.Print();
+
+        //// Выполнить произведение Кронекера
+        //BlockMatrix<int, DenseMatrix> result = A.kroneckerProduct(B);
+        //std::cout << "\nKronecker Product of A and B:\n";
+        //result.Print();
+
+
+        ////// Настройка параметров векторов
         //VectorParams vparams1;
         //vparams1.size = 10;          // Общий размер
         //vparams1.nodeOffset = 0;     // Смещение

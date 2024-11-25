@@ -20,8 +20,12 @@ const T& DiagonalMatrix<T>::operator()(size_t i, size_t j) const {
 
 template <typename T>
 DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) const {
-    if (rows() != other.rows() || cols() != other.cols()) {
-        throw std::invalid_argument("Matrices must have the same dimensions for addition.");
+    // Проверка на несовместимые размеры
+    if (rows() != other.rows()) {
+        throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
+    }
+    if (cols() != other.cols()) {
+        throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
     DiagonalMatrix<T> result(rows());
@@ -33,8 +37,12 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) c
 
 template <typename T>
 DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) const {
-    if (rows() != other.rows() || cols() != other.cols()) {
-        throw std::invalid_argument("Matrices must have the same dimensions for subtraction.");
+    // Проверка на несовместимые размеры
+    if (rows() != other.rows()) {
+        throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
+    }
+    if (cols() != other.cols()) {
+        throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
     DiagonalMatrix<T> result(rows());
@@ -47,8 +55,9 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) c
 template <typename T>
 DiagonalMatrix<T> DiagonalMatrix<T>::operator*(const DiagonalMatrix<T>& other) const {
 
-    if (cols() != other.rows()) { // Умножение возможно только если cols первого == rows второго
-        throw std::invalid_argument("Number of columns in the first matrix must match number of rows in the second.");
+    // Проверка на несовместимые размеры (число столбцов первой должно совпадать с числом строк второй)
+    if (cols() != other.rows()) {
+        throw std::invalid_argument("Количество столбцов первой матрицы должно совпадать с количеством строк второй матрицы."); // Проверка совместимости для умножения
     }
 
     DiagonalMatrix<T> result(rows());

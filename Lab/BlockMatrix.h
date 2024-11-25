@@ -73,6 +73,22 @@ public:
     }
 
     BlockMatrix operator+(const BlockMatrix& other) const {
+        // Проверка: совпадает ли количество блоков и размеры каждого блока
+        if (blockRows_ != other.blockRows_) {
+            throw std::runtime_error("Не совпадает количество блоков по строкам");
+        }
+
+        if (blockCols_ != other.blockCols_) {
+            throw std::runtime_error("Не совпадает количество блоков по столбцам");
+        }
+
+        if (blockSizeRows_ != other.blockSizeRows_) {
+            throw std::runtime_error("Не совпадают размеры блоков по строкам");
+        }
+
+        if (blockSizeCols_ != other.blockSizeCols_) {
+            throw std::runtime_error("Не совпадают размеры блоков по столбцам");
+        }
         BlockMatrix result(blockRows_, blockCols_, blockSizeRows_, blockSizeCols_);
         for (size_t i = 0; i < blockRows_; ++i) {
             for (size_t j = 0; j < blockCols_; ++j) {
@@ -85,6 +101,22 @@ public:
     }
 
     BlockMatrix operator-(const BlockMatrix& other) const {
+        // Проверка: совпадает ли количество блоков и размеры каждого блока
+        if (blockRows_ != other.blockRows_) {
+            throw std::runtime_error("Не совпадает количество блоков по строкам");
+        }
+
+        if (blockCols_ != other.blockCols_) {
+            throw std::runtime_error("Не совпадает количество блоков по столбцам");
+        }
+
+        if (blockSizeRows_ != other.blockSizeRows_) {
+            throw std::runtime_error("Не совпадают размеры блоков по строкам");
+        }
+
+        if (blockSizeCols_ != other.blockSizeCols_) {
+            throw std::runtime_error("Не совпадают размеры блоков по столбцам");
+        }
         BlockMatrix result(blockRows_, blockCols_, blockSizeRows_, blockSizeCols_);
         for (size_t i = 0; i < blockRows_; ++i) {
             for (size_t j = 0; j < blockCols_; ++j) {
@@ -96,28 +128,44 @@ public:
         return result;
     }
 
-    BlockMatrix operator*(const BlockMatrix& other) const {
-        if (blockCols_ != other.blockRows_) {
-            throw std::invalid_argument("Block matrices have incompatible dimensions for multiplication");
-        }
+    //BlockMatrix operator*(const BlockMatrix& other) const {
+    //    // Проверка: совпадает ли количество блоков и размеры каждого блока
+    //    if (blockRows_ != other.blockRows_) {
+    //        throw std::runtime_error("Не совпадает количество блоков по строкам");
+    //    }
 
-        BlockMatrix result(blockRows_, other.blockCols_, blockSizeRows_, other.blockSizeCols_);
-        for (size_t i = 0; i < blockRows_; ++i) {
-            for (size_t j = 0; j < other.blockCols_; ++j) {
-                for (size_t k = 0; k < blockCols_; ++k) {
-                    if (blocks[i][k] && other.blocks[k][j]) {
-                        if (!result.blocks[i][j]) {
-                            result.blocks[i][j] = new MatrixType<T>(*blocks[i][k] * *other.blocks[k][j]);
-                        }
-                        else {
-                            *result.blocks[i][j] = *result.blocks[i][j] + (*blocks[i][k] * *other.blocks[k][j]);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
+    //    if (blockCols_ != other.blockCols_) {
+    //        throw std::runtime_error("Не совпадает количество блоков по столбцам");
+    //    }
+
+    //    if (blockSizeRows_ != other.blockSizeRows_) {
+    //        throw std::runtime_error("Не совпадают размеры блоков по строкам");
+    //    }
+
+    //    if (blockSizeCols_ != other.blockSizeCols_) {
+    //        throw std::runtime_error("Не совпадают размеры блоков по столбцам");
+    //    }
+    //    if (blockCols_ != other.blockRows_) {
+    //        throw std::invalid_argument("Block matrices have incompatible dimensions for multiplication");
+    //    }
+
+    //    BlockMatrix result(blockRows_, other.blockCols_, blockSizeRows_, other.blockSizeCols_);
+    //    for (size_t i = 0; i < blockRows_; ++i) {
+    //        for (size_t j = 0; j < other.blockCols_; ++j) {
+    //            for (size_t k = 0; k < blockCols_; ++k) {
+    //                if (blocks[i][k] && other.blocks[k][j]) {
+    //                    if (!result.blocks[i][j]) {
+    //                        result.blocks[i][j] = new MatrixType<T>(*blocks[i][k] * *other.blocks[k][j]);
+    //                    }
+    //                    else {
+    //                        *result.blocks[i][j] = *result.blocks[i][j] + (*blocks[i][k] * *other.blocks[k][j]);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    return result;
+    //}
 
     void Print() const override {
         for (size_t i = 0; i < rows(); ++i) {

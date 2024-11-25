@@ -215,18 +215,35 @@
 ////    return result; // Возвращает результирующую блочную матрицу
 ////}
 
+// Явная инстанциация для типов
+// Явная инстанциация для стандартных числовых типов и двух типов матриц DiagonalMatrix и DenseMatrix.
 
-template class BlockMatrix<int, DenseMatrix>;                      // int: 32-битное целое число (в большинстве сред).
-//template class BlockMatrix<unsigned int>;              // unsigned int: Беззнаковое 32-битное целое число.
-//template class BlockMatrix<short>;                     // short: Обычно 16-битное целое число.
-//template class BlockMatrix<unsigned short>;            // unsigned short: Беззнаковое 16-битное целое число.
-//template class BlockMatrix<long>;                       // long: Обычно 32-битное целое, но в некоторых средах это 64-битное целое (например, на 64-разрядных системах).
-//template class BlockMatrix<unsigned long>;              // unsigned long: Беззнаковое представление long.
-//template class BlockMatrix<long long>;                 // long long: Гарантирует минимум 64 бита.
-//template class BlockMatrix<unsigned long long>;        // unsigned long long: Беззнаковое представление long long.
-//template class BlockMatrix<float>;                      // float: Обычно 32-битное представление числа с плавающей точкой.
+//Для DenseMatrix
+
+template class BlockMatrix<int, DenseMatrix>;                       // int: 32-битное целое число (в большинстве сред).
+template class BlockMatrix<unsigned int, DenseMatrix>;              // unsigned int: Беззнаковое 32-битное целое число.
+template class BlockMatrix<short, DenseMatrix>;                     // short: Обычно 16-битное целое число.
+template class BlockMatrix<unsigned short, DenseMatrix>;            // unsigned short: Беззнаковое 16-битное целое число.
+template class BlockMatrix<long, DenseMatrix>;                       // long: Обычно 32-битное целое, но в некоторых средах это 64-битное целое (например, на 64-разрядных системах).
+template class BlockMatrix<unsigned long, DenseMatrix>;              // unsigned long: Беззнаковое представление long.
+template class BlockMatrix<long long, DenseMatrix>;                 // long long: Гарантирует минимум 64 бита.
+template class BlockMatrix<unsigned long long, DenseMatrix>;        // unsigned long long: Беззнаковое представление long long.
+template class BlockMatrix<float, DenseMatrix>;                      // float: Обычно 32-битное представление числа с плавающей точкой.
 template class BlockMatrix<double, DenseMatrix>;                     // double: Обычно 64-битное представление числа с плавающей точкой.
-//template class BlockMatrix<long double>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.
+template class BlockMatrix<long double, DenseMatrix>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.
 
-template class BlockMatrix<int, DiagonalMatrix>;
+//Для DiagonalMatrix
+
+template class BlockMatrix<int, DiagonalMatrix>;                       // int: 32-битное целое число (в большинстве сред).
+template class BlockMatrix<unsigned int, DiagonalMatrix>;              // unsigned int: Беззнаковое 32-битное целое число.
+template class BlockMatrix<short, DiagonalMatrix>;                     // short: Обычно 16-битное целое число.
+template class BlockMatrix<unsigned short, DiagonalMatrix>;            // unsigned short: Беззнаковое 16-битное целое число.
+template class BlockMatrix<long, DiagonalMatrix>;                       // long: Обычно 32-битное целое, но в некоторых средах это 64-битное целое (например, на 64-разрядных системах).
+template class BlockMatrix<unsigned long, DiagonalMatrix>;              // unsigned long: Беззнаковое представление long.
+template class BlockMatrix<long long, DiagonalMatrix>;                 // long long: Гарантирует минимум 64 бита.
+template class BlockMatrix<unsigned long long, DiagonalMatrix>;        // unsigned long long: Беззнаковое представление long long.
+template class BlockMatrix<float, DiagonalMatrix>;                      // float: Обычно 32-битное представление числа с плавающей точкой.
+template class BlockMatrix<double, DiagonalMatrix>;                     // double: Обычно 64-битное представление числа с плавающей точкой.
+template class BlockMatrix<long double, DiagonalMatrix>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.
+
 
