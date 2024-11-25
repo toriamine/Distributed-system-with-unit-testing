@@ -6,7 +6,7 @@
 BOOST_AUTO_TEST_SUITE(DiagonalMatrixTests) // Начало набора тестов для диагональных матриц
 
 // Тестирование конструктора и доступа к элементам
-BOOST_AUTO_TEST_CASE(ConstructorAndAccess) {
+BOOST_AUTO_TEST_CASE(DiagonalMatrixConstructorTest) {
     DiagonalMatrix<double> mat(3); // Создаем диагональную матрицу 3x3
 
     // Устанавливаем значения на главной диагонали
@@ -25,95 +25,68 @@ BOOST_AUTO_TEST_CASE(ConstructorAndAccess) {
 }
 
 // Тестирование сложения диагональных матриц
-BOOST_AUTO_TEST_CASE(Addition) {
-    DiagonalMatrix<double> a(3); // Создаем первую диагональную матрицу 3x3
-    DiagonalMatrix<double> b(3); // Создаем вторую диагональную матрицу 3x3
+BOOST_AUTO_TEST_CASE(DiagonalMatrixAdditionTest) {
+    DiagonalMatrix<int> matrixA{ 1, 2, 3 };
+    DiagonalMatrix<int> matrixB{ 4, 5, 6 };
+    DiagonalMatrix<int> result = matrixA + matrixB;
 
-    // Заполнение матрицы a
-    a(0, 0) = 1.0; // (0, 0)
-    a(1, 1) = 2.0; // (1, 1)
-    a(2, 2) = 3.0; // (2, 2)
-
-    // Заполнение матрицы b
-    b(0, 0) = 4.0; // (0, 0)
-    b(1, 1) = 5.0; // (1, 1)
-    b(2, 2) = 6.0; // (2, 2)
-
-    auto result = a + b; // Сложение двух диагональных матриц
-
-    // Проверка результатов сложения
-    BOOST_CHECK_EQUAL(result(0, 0), 5.0);// Ожидаем, что (0, 0) равно 1.0 + 4.0 = 5.0
-    BOOST_CHECK_EQUAL(result(1, 1), 7.0); // Ожидаем, что (1, 1) равно 2.0 + 5.0 = 7.0
-    BOOST_CHECK_EQUAL(result(2, 2), 9.0);// Ожидаем, что (2, 2) равно 3.0 + 6.0 = 9.0
+    BOOST_CHECK_EQUAL(result(0, 0), 5);
+    BOOST_CHECK_EQUAL(result(1, 1), 7);
+    BOOST_CHECK_EQUAL(result(2, 2), 9);
 }
 
-// Тестирование вычитания диагональных матриц
-BOOST_AUTO_TEST_CASE(Subtraction) {
-    DiagonalMatrix<double> a(3); // Создаем первую диагональную матрицу 3x3
-    DiagonalMatrix<double> b(3); // Создаем вторую диагональную матрицу 3x3
+BOOST_AUTO_TEST_CASE(DiagonalMatrixSubtractionTest) {
+    DiagonalMatrix<int> matrixA{ 5, 6, 7 };
+    DiagonalMatrix<int> matrixB{ 2, 1, 0 };
+    DiagonalMatrix<int> result = matrixA - matrixB;
 
-    // Заполнение матрицы a
-    a(0, 0) = 5.0; // (0, 0)
-    a(1, 1) = 6.0; // (1, 1)
-    a(2, 2) = 7.0; // (2, 2)
-
-    // Заполнение матрицы b
-    b(0, 0) = 3.0; // (0, 0)
-    b(1, 1) = 2.0; // (1, 1)
-    b(2, 2) = 1.0; // (2, 2)
-
-    auto result = a - b; // Вычитание двух диагональных матриц
-
-    // Проверка результатов вычитания
-    BOOST_CHECK_EQUAL(result(0, 0), 2.0); // Ожидаем, что (0, 0) равно 5.0 - 3.0 = 2.0
-    BOOST_CHECK_EQUAL(result(1, 1), 4.0); // Ожидаем, что (1, 1) равно 6.0 - 2.0 = 4.0
-    BOOST_CHECK_EQUAL(result(2, 2), 6.0); // Ожидаем, что (2, 2) равно 7.0 - 1.0 = 6.0
-
+    BOOST_CHECK_EQUAL(result(0, 0), 3);
+    BOOST_CHECK_EQUAL(result(1, 1), 5);
+    BOOST_CHECK_EQUAL(result(2, 2), 7);
 }
 
-// Тестирование умножения диагональных матриц
-BOOST_AUTO_TEST_CASE(Multiplication) {
-    DiagonalMatrix<double> a(3); // Создаем первую диагональную матрицу 3x3
-    DiagonalMatrix<double> b(3); // Создаем вторую диагональную матрицу 3x3
+BOOST_AUTO_TEST_CASE(DiagonalMatrixMultiplicationTest) {
+    DiagonalMatrix<int> matrixA{ 1, 2, 3 };
+    DiagonalMatrix<int> matrixB{ 4, 5, 6 };
+    DiagonalMatrix<int> result = matrixA * matrixB;
 
-    // Заполнение матрицы a
-    a(0, 0) = 1.0; // (0, 0)
-    a(1, 1) = 2.0; // (1, 1)
-    a(2, 2) = 3.0; // (2, 2)
+    BOOST_CHECK_EQUAL(result(0, 0), 4);
+    BOOST_CHECK_EQUAL(result(1, 1), 10);
+    BOOST_CHECK_EQUAL(result(2, 2), 18);
+}
 
-    // Заполнение матрицы b
-    b(0, 0) = 4.0; // (0, 0)
-    b(1, 1) = 5.0; // (1, 1)
-    b(2, 2) = 6.0; // (2, 2)
-
-    auto result = a * b; // Умножение двух диагональных матриц
-
-    // Проверка результатов умножения
-
-    BOOST_CHECK_EQUAL(result(0, 0), 4.0); // Ожидаем, что (0, 0) равно 1.0 * 4.0 = 4.0
-    BOOST_CHECK_EQUAL(result(1, 1), 10.0); // Ожидаем, что (1, 1) равно 2.0 * 5.0 = 10.0
-    BOOST_CHECK_EQUAL(result(2, 2), 18.0); // Ожидаем, что (2, 2) равно 3.0 * 6.0 = 18.0
-
+BOOST_AUTO_TEST_CASE(DiagonalMatrixSizeTest) {
+    DiagonalMatrix<int> matrix(3); // Создание 3x3 диагональной матрицы с нулями
+    BOOST_CHECK_EQUAL(matrix.rows(), 3);
+    BOOST_CHECK_EQUAL(matrix.cols(), 3);
 }
 
 // Тестирование сложения несовместимых матриц
 BOOST_AUTO_TEST_CASE(IncompatibleAddition) {
-    DiagonalMatrix<double> a(2); // Создаем первую диагональную матрицу 2x3
-    DiagonalMatrix<double> b(3); // Создаем вторую диагональную матрицу 3x2
+    DiagonalMatrix<double> a{ 1, 2 }; // Создаем первую диагональную матрицу размером 2x2
+    DiagonalMatrix<double> b{ 1, 2, 3 }; // Создаем вторую диагональную матрицу размером 3x3
 
     // Проверяем, что сложение этих матриц вызывает исключение
-    BOOST_CHECK_THROW(a + b, std::runtime_error); // Ожидаем исключение при сложении несовместимых матриц
+    BOOST_CHECK_THROW(a + b, std::invalid_argument); // Ожидаем исключение при сложении несовместимых матриц
 }
+
 
 // Тестирование умножения несовместимых матриц
 BOOST_AUTO_TEST_CASE(IncompatibleMultiplication) {
-    DiagonalMatrix<double> a(3); // Создаем первую диагональную матрицу 3x3
-    DiagonalMatrix<double> b(2); // Создаем вторую диагональную матрицу 2x3 (несовместимые размеры)
+    DiagonalMatrix<double> a{ 1, 2, 3 }; // Создаем первую диагональную матрицу размером 3x3
+    DiagonalMatrix<double> b{ 1, 2 }; // Создаем вторую диагональную матрицу размером 2x2 (несовместимые размеры)
 
     // Проверяем, что умножение этих матриц вызывает исключение
-    BOOST_CHECK_THROW(a * b, std::runtime_error); // Ожидаем исключение при умножении несовместимых матриц
+    BOOST_CHECK_THROW(a * b, std::invalid_argument); // Ожидаем исключение при умножении несовместимых матриц
 }
 
+BOOST_AUTO_TEST_CASE(IncompatibleSubtraction) {
+    DiagonalMatrix<double> a{ 1, 2, 3 }; // Создаем первую диагональную матрицу размером 3x3
+    DiagonalMatrix<double> b{ 1, 2 }; // Создаем вторую диагональную матрицу размером 2x2 (несовместимые размеры)
+
+    // Проверяем, что умножение этих матриц вызывает исключение
+    BOOST_CHECK_THROW(a - b, std::invalid_argument); // Ожидаем исключение при умножении несовместимых матриц
+}
 
 
 BOOST_AUTO_TEST_SUITE_END() // Конец набора тестов для диагональных матриц

@@ -1,5 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include "../Lab/DenseMatrix.h"
+#include "../Lab/DenseMatrix.cpp"
 #include <stdexcept>
 
 BOOST_AUTO_TEST_SUITE(DenseMatrixTests)
@@ -76,15 +77,14 @@ BOOST_AUTO_TEST_CASE(DenseMultiplicationTest) {
 
 }
 
-/*
+
 BOOST_AUTO_TEST_CASE(DenseIncompatibleDimensionsTest) {
     DenseMatrix<double> mat1{ {1, 2} };  // 1x2
     DenseMatrix<double> mat2{ {1}, {2} }; // 2x1
 
-    BOOST_CHECK_THROW(mat1 + mat2, std::runtime_error);
-    BOOST_CHECK_THROW(mat1 - mat2, std::runtime_error);
-    BOOST_CHECK_THROW(mat1 * mat2, std::runtime_error);
+    BOOST_CHECK_THROW(mat1 + mat2, std::invalid_argument);
+    BOOST_CHECK_THROW(mat1 - mat2, std::invalid_argument);
+    BOOST_CHECK_THROW(mat1 * mat2, std::invalid_argument);
 }
-*/
 
 BOOST_AUTO_TEST_SUITE_END()
