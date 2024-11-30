@@ -1,5 +1,27 @@
 #include "DiagonalMatrix.h"
 
+// Конструктор
+template<typename T>
+DiagonalMatrix<T>::DiagonalMatrix(std::initializer_list<T> initializer_list)
+    : data(initializer_list.size(), std::vector<T>(initializer_list.size(), T(0))) {
+    size = initializer_list.size();
+    size_t index = 0;
+    for (auto& val : initializer_list) {
+        data[index][index] = val;  // Заполните диагональные элементы
+        ++index;
+    }
+}
+
+// Конструктор для нулевой инициализации
+template<typename T>
+DiagonalMatrix<T>::DiagonalMatrix(size_t Size)
+    : data(Size, std::vector<T>(Size, T(0))) {
+    size = Size;
+    for (size_t i = 0; i < size; ++i) {
+        data[i][i] = T(0);  // Все элементы по умолчанию нули
+    }
+}
+
 // Реализация операторов
    // Доступ к элементам матрицы
 template <typename T>
@@ -7,7 +29,7 @@ T& DiagonalMatrix<T>::operator()(size_t i, size_t j) {
     if (i >= rows() || j >= cols()) {
         throw std::out_of_range("Index out of range");
     }
-    return data[i][j];
+    return data[i][j];  
 }
 
 template <typename T>
@@ -16,6 +38,18 @@ const T& DiagonalMatrix<T>::operator()(size_t i, size_t j) const {
         throw std::out_of_range("Index out of range");
     }
     return data[i][j];
+}
+
+// Метод получения количества строк
+template <typename T>
+size_t DiagonalMatrix<T>::rows() const {
+    return size;
+}
+
+// Метод получения количества столбцов
+template <typename T>
+size_t DiagonalMatrix<T>::cols() const {
+    return size;
 }
 
 template <typename T>
@@ -30,7 +64,14 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) c
 
     DiagonalMatrix<T> result(rows());
     for (size_t i = 0; i < rows(); ++i) {
-        result(i, i) = diagonalElements[i] + other.diagonalElements[i];
+        for (size_t j = 0; j < rows(); ++j)
+        {
+            if (i == j)
+            {
+                result(i, j) = data[i][j] + other.data[i][j];
+            }
+            
+        }
     }
     return result;
 }
@@ -47,7 +88,14 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) c
 
     DiagonalMatrix<T> result(rows());
     for (size_t i = 0; i < rows(); ++i) {
-        result(i, i) = diagonalElements[i] - other.diagonalElements[i];
+        for (size_t j = 0; j < rows(); ++j)
+        {
+            if (i == j)
+            {
+                result(i, j) = data[i][j] - other.data[i][j];
+            }
+
+        }
     }
     return result;
 }
@@ -62,13 +110,30 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator*(const DiagonalMatrix<T>& other) c
 
     DiagonalMatrix<T> result(rows());
     for (size_t i = 0; i < rows(); ++i) {
-        result(i, i) = diagonalElements[i] * other.diagonalElements[i];
+        for (size_t j = 0; j < rows(); ++j)
+        {
+            if (i == j)
+            {
+                result(i, j) = data[i][j] * other.data[i][j];
+            }
+
+        }
     }
     return result;
 }
 
+// Метод для вывода матрицы
+template <typename T>
+void DiagonalMatrix<T>::Print() const {
+    std::cout << "Diagonal Matrix:\n";
+    for (size_t i = 0; i < rows(); ++i) {
+        for (size_t j = 0; j < cols(); ++j) {
+            std::cout << data[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
-// Явная инстанциация для типов
 // Явная инстанциация для стандартных числовых типов
 
 template class DiagonalMatrix<int>;                       // int: 32-битное целое число (в большинстве сред).
@@ -82,4 +147,3 @@ template class DiagonalMatrix<unsigned long long>;        // unsigned long long:
 template class DiagonalMatrix<float>;                      // float: Обычно 32-битное представление числа с плавающей точкой.
 template class DiagonalMatrix<double>;                     // double: Обычно 64-битное представление числа с плавающей точкой.
 template class DiagonalMatrix<long double>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.
-

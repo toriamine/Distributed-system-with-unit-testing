@@ -12,6 +12,7 @@
 #include "AppParams.h"
 
 int main(int argc, char* argv[]) {
+    setlocale(LC_ALL, "ru");
     AppParams appParams;
     if (!appParams.ParseCommandLine(argc, argv))
         //return 1;
@@ -144,11 +145,11 @@ int main(int argc, char* argv[]) {
         denseE.Print();
 
         // Создаем диагональные матрицы
-        DiagonalMatrix<int> diagA(2);
-        diagA(0, 0) = 1; diagA(1, 1) = 3;
+        DiagonalMatrix<int> diagA(3);
+        diagA(0, 0) = 1; diagA(1, 1) = 3; diagA(2, 2) = 6;
 
-        DiagonalMatrix<int> diagB(2);
-        diagB(0, 0) = 2; diagB(1, 1) = 4;
+        DiagonalMatrix<int> diagB(3);
+        diagB(0, 0) = 2; diagB(1, 1) = 4; diagB(2, 2) = 10;
 
         std::cout << "\nDiagonal Matrix A:\n";
         diagA.Print();
@@ -168,41 +169,46 @@ int main(int argc, char* argv[]) {
         std::cout << "\nA * B:\n";
         diagE.Print();
 
+        std::cout << "\nБлочная матрица состоящая из DenseMatrix:\n" << std::endl;
+
         // Создаем блочные матрицы 2x2 блоков, каждый из которых 2x2 элементы
         BlockMatrix<int, DenseMatrix> blockMatrixA(2, 2, 2, 2);
-        blockMatrixA.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixA.CreateBlock(0, 0, new DenseMatrix<int>(2, 2));
         blockMatrixA(0, 0) = 1; blockMatrixA(0, 1) = 2;
         blockMatrixA(1, 0) = 3; blockMatrixA(1, 1) = 4;
 
-        blockMatrixA.setBlock(0, 1, new DenseMatrix<int>(2, 2));
+        blockMatrixA.CreateBlock(0, 1, new DenseMatrix<int>(2, 2));
         blockMatrixA(0, 2) = 5; blockMatrixA(0, 3) = 6;
         blockMatrixA(1, 2) = 7; blockMatrixA(1, 3) = 8;
 
-        blockMatrixA.setBlock(1, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixA.CreateBlock(1, 0, new DenseMatrix<int>(2, 2));
         blockMatrixA(2, 0) = 9; blockMatrixA(2, 1) = 10;
         blockMatrixA(3, 0) = 11; blockMatrixA(3, 1) = 12;
 
-        blockMatrixA.setBlock(1, 1, new DenseMatrix<int>(2, 2));
+        blockMatrixA.CreateBlock(1, 1, new DenseMatrix<int>(2, 2));
         blockMatrixA(2, 2) = 13; blockMatrixA(2, 3) = 14;
         blockMatrixA(3, 2) = 15; blockMatrixA(3, 3) = 16;
+
+        blockMatrixA(2, 2) = 22; blockMatrixA(2, 3) = 22;
+        blockMatrixA(3, 2) = 22; blockMatrixA(3, 3) =22;
 
         std::cout << "Block Matrix A:\n";
         blockMatrixA.Print();
 
         BlockMatrix<int, DenseMatrix> blockMatrixB(2, 2, 2, 2);
-        blockMatrixB.setBlock(0, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixB.CreateBlock(0, 0, new DenseMatrix<int>(2, 2));
         blockMatrixB(0, 0) = 1; blockMatrixB(0, 1) = 1;
         blockMatrixB(1, 0) = 1; blockMatrixB(1, 1) = 1;
 
-        blockMatrixB.setBlock(0, 1, new DenseMatrix<int>(2, 2));
+        blockMatrixB.CreateBlock(0, 1, new DenseMatrix<int>(2, 2));
         blockMatrixB(0, 2) = 2; blockMatrixB(0, 3) = 2;
         blockMatrixB(1, 2) = 2; blockMatrixB(1, 3) = 2;
 
-        blockMatrixB.setBlock(1, 0, new DenseMatrix<int>(2, 2));
+        blockMatrixB.CreateBlock(1, 0, new DenseMatrix<int>(2, 2));
         blockMatrixB(2, 0) = 3; blockMatrixB(2, 1) = 3;
         blockMatrixB(3, 0) = 3; blockMatrixB(3, 1) = 3;
 
-        blockMatrixB.setBlock(1, 1, new DenseMatrix<int>(2, 2));
+        blockMatrixB.CreateBlock(1, 1, new DenseMatrix<int>(2, 2));
         blockMatrixB(2, 2) = 4; blockMatrixB(2, 3) = 4;
         blockMatrixB(3, 2) = 4; blockMatrixB(3, 3) = 4;
 
@@ -218,10 +224,6 @@ int main(int argc, char* argv[]) {
         std::cout << "\nA - B:\n";
         blockMatrixD.Print();
 
-        /*BlockMatrix<int, DenseMatrix> blockMatrixE = blockMatrixA * blockMatrixB;
-        std::cout << "\nA * B:\n";
-        blockMatrixE.Print();*/
-
         // Вызов метода kroneckerProduct
         auto kroneckerResult = blockMatrixA.kroneckerProduct(blockMatrixB);
         std::cout << "\nKronecker Product of A and B:\n";
@@ -229,22 +231,22 @@ int main(int argc, char* argv[]) {
 
         //Диагональные матрицы
 
-        std::cout << "Диагональная матрица (DiagonalMatrix):" << std::endl;
+        std::cout << "\nБлочная матрица состоящая из DiagonalMatrix:\n" << std::endl;
 
         BlockMatrix<int, DiagonalMatrix> blockMatrixA1(2, 2, 2, 2);
-        blockMatrixA1.setBlock(0, 0, new DiagonalMatrix<int>({ 1, 4 }));
-        blockMatrixA1.setBlock(0, 1, new DiagonalMatrix<int>({ 5, 8 }));
-        blockMatrixA1.setBlock(1, 0, new DiagonalMatrix<int>({ 9, 12 }));
-        blockMatrixA1.setBlock(1, 1, new DiagonalMatrix<int>({ 13, 16 }));
+        blockMatrixA1.CreateBlock(0, 0, new DiagonalMatrix<int>({ 1, 4 }));
+        blockMatrixA1.CreateBlock(0, 1, new DiagonalMatrix<int>({ 5, 8 }));
+        blockMatrixA1.CreateBlock(1, 0, new DiagonalMatrix<int>({ 9, 12 }));
+        blockMatrixA1.CreateBlock(1, 1, new DiagonalMatrix<int>({ 13, 16 }));
 
         std::cout << "Block Diagonal Matrix A:\n";
         blockMatrixA1.Print();
 
         BlockMatrix<int, DiagonalMatrix> blockMatrixB1(2, 2, 2, 2);
-        blockMatrixB1.setBlock(0, 0, new DiagonalMatrix<int>({ 1, 1 }));
-        blockMatrixB1.setBlock(0, 1, new DiagonalMatrix<int>({ 2, 2 }));
-        blockMatrixB1.setBlock(1, 0, new DiagonalMatrix<int>({ 3, 3 }));
-        blockMatrixB1.setBlock(1, 1, new DiagonalMatrix<int>({ 4, 4 }));
+        blockMatrixB1.CreateBlock(0, 0, new DiagonalMatrix<int>({ 1, 1 }));
+        blockMatrixB1.CreateBlock(0, 1, new DiagonalMatrix<int>({ 2, 2 }));
+        blockMatrixB1.CreateBlock(1, 0, new DiagonalMatrix<int>({ 3, 3 }));
+        blockMatrixB1.CreateBlock(1, 1, new DiagonalMatrix<int>({ 4, 4 }));
 
         std::cout << "\nBlock Diagonal Matrix B:\n";
         blockMatrixB1.Print();
@@ -258,65 +260,9 @@ int main(int argc, char* argv[]) {
         std::cout << "\nA - B:\n";
         blockMatrixD1.Print();
 
-        /*BlockMatrix<int, DiagonalMatrix> blockMatrixE1 = blockMatrixA1 * blockMatrixB1;
-        std::cout << "\nA * B:\n";
-        blockMatrixE1.Print();*/
-
         auto kroneckerResult1 = blockMatrixA1.kroneckerProduct(blockMatrixB1);
         std::cout << "\nKronecker Product of A and B:\n";
         kroneckerResult1.Print();
-
-
-        ////Создаем блочные матрицы 2x2 блоков
-        //BlockMatrix<int, DenseMatrix> A(2, 2, 2, 2); // 2 блока по 2 строки, 2 блока по 2 столбца
-        //BlockMatrix<int, DenseMatrix> B(2, 2, 2, 2); // 2 блока по 2 строки, 2 блока по 2 столбца
-
-        //// Заполнение матрицы A
-        //A.setBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок A[0][0]
-        //A(0, 0) = 1; A(0, 1) = 2;
-        //A(1, 0) = 3; A(1, 1) = 4;
-
-        //A.setBlock(0, 1, new DenseMatrix<int>(2, 2)); // Блок A[0][1]
-        //A(0, 2) = 5; A(0, 3) = 6;
-        //A(1, 2) = 7; A(1, 3) = 8;
-
-        //A.setBlock(1, 0, new DenseMatrix<int>(2, 2)); // Блок A[1][0]
-        //A(2, 0) = 9; A(2, 1) = 10;
-        //A(3, 0) = 11; A(3, 1) = 12;
-
-        //A.setBlock(1, 1, new DenseMatrix<int>(2, 2)); // Блок A[1][1]
-        //A(2, 2) = 13; A(2, 3) = 14;
-        //A(3, 2) = 15; A(3, 3) = 16;
-
-
-        //std::cout << "Block Diagonal Matrix A:\n";
-        //A.Print();
-
-        //// Заполнение матрицы B
-        //B.setBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок B[0][0]
-        //B(0, 0) = 0; B(0, 1) = 1;
-        //B(1, 0) = 2; B(1, 1) = 3;
-
-        //B.setBlock(0, 1, new DenseMatrix<int>(2, 2)); // Блок B[0][1]
-        //B(0, 2) = 4; B(0, 3) = 5;
-        //B(1, 2) = 6; B(1, 3) = 7;
-
-        //B.setBlock(1, 0, new DenseMatrix<int>(2, 2)); // Блок B[1][0]
-        //B(2, 0) = 8; B(2, 1) = 9;
-        //B(3, 0) = 10; B(3, 1) = 11;
-
-        //B.setBlock(1, 1, new DenseMatrix<int>(2, 2)); // Блок B[1][1]
-        //B(2, 2) = 12; B(2, 3) = 13;
-        //B(3, 2) = 14; B(3, 3) = 15;
-
-        //std::cout << "Block Diagonal Matrix B:\n";
-        //B.Print();
-
-        //// Выполнить произведение Кронекера
-        //BlockMatrix<int, DenseMatrix> result = A.kroneckerProduct(B);
-        //std::cout << "\nKronecker Product of A and B:\n";
-        //result.Print();
-
 
         ////// Настройка параметров векторов
         //VectorParams vparams1;

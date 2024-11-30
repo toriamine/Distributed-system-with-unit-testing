@@ -28,10 +28,10 @@ public:
     ~DenseMatrix() override; // Деструктор
 
     // Оператор доступа к элементу (модифицируемый)
-    T& operator()(size_t i, size_t j);
+    T& operator()(size_t i, size_t j) override;
 
     // Оператор доступа к элементу (константный)
-    const T& operator()(size_t i, size_t j) const;
+    const T& operator()(size_t i, size_t j) const override;
 
     // Метод получения количества строк
     size_t rows() const override;
