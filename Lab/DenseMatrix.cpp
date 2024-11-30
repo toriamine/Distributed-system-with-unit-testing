@@ -38,7 +38,7 @@ DenseMatrix<T>& DenseMatrix<T>::operator=(const DenseMatrix<T>& other) {
 
 // Деструктор
 template <typename T>
-DenseMatrix<T>::~DenseMatrix() = default; // Можно просто использовать default
+DenseMatrix<T>::~DenseMatrix() {}; // Можно просто использовать default
 
 // Оператор доступа к элементу (модифицируемый)
 template <typename T>

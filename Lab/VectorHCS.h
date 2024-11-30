@@ -14,9 +14,16 @@ struct VectorParams {
 // Шаблонный класс для векторов в распределенной системе
 template <typename T>
 class VectorHCS {
+private:
+    size_t _size;       // Общий размер вектора
+    size_t _nodeOffset; // Смещение для узла
+    size_t _deviceOffset; // Смещение для устройства
+    size_t _blockSize;  // Размер блока
+    Cluster* _cluster;   // Указатель на кластер
+    T* _data;           // Указатель на массив данных
 public:
     // Конструктор класса
-    VectorHCS(const VectorParams& vparams, Cluster* cluster)
+    VectorHCS(const VectorParams& vparams, Cluster* cluster)// принимает структуру вектора и кластер, в котором мы его размещаем
         : _size(vparams.size), // Инициализация размера вектора
         _nodeOffset(vparams.nodeOffset), // Установка смещения узла
         _deviceOffset(vparams.deviceOffset), // Установка смещения устройства
@@ -93,11 +100,5 @@ public:
         return result; // Возвращаем результат скалярного произведения
     }
 
-private:
-    size_t _size;       // Общий размер вектора
-    size_t _nodeOffset; // Смещение для узла
-    size_t _deviceOffset; // Смещение для устройства
-    size_t _blockSize;  // Размер блока
-    Cluster* _cluster;   // Указатель на кластер
-    T* _data;           // Указатель на массив данных
+
 };

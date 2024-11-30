@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(LoadAndPrintGeometry) {
     const char* argv[] = {
         "program_name",
         "-ffgeom", "Geometry_TXT_Format",
-        "-fpgeom", "geometry2d.txt",
+        "-fpgeom", "geometry2d.txt",//Этот файл должен быть в папке BoostTest
         "-ffgrid", "grid2d_params_TXT_Format",
         "-fpgrid", "grid2d_params.txt"
     };
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(FailOnInvalidFile) {
         "-ffgeom", "Geometry_TXT_Format",
         "-fpgeom", "non_existing_file.txt",
         "-ffgrid", "grid2d_params_TXT_Format",
-        "-fpgrid", "grid2d_params.txt"
+        "-fpgrid", "grid2d_params.txt"//Этот файл должен быть в папке BoostTest
     };
     int argc = sizeof(argv) / sizeof(argv[0]); // Определяем количество аргументов
 
