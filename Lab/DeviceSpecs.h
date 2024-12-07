@@ -220,4 +220,3 @@ private:
     std::string _formFactor;   // Форм-фактор (например, 3.5", 2.5")
     double _averageSeekTime;   // Среднее время поиска
 };
-
