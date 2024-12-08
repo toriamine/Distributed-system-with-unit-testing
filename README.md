@@ -1,4 +1,4 @@
-Стандарт языка С++: Стандарт ISO C++17 (/std:c++17). Нужно установить это в свойствах проекта.
+Стандарт языка С++: Стандарт ISO C++17 (/std:c++17). Нужно установить это в свойствах проекта./n
 Программа запускается из консоли в папке со сборкой exe проекта: НазваниеРешения.exe -ffgeom txt -fpgeom geometry2d.txt -ffgrid txt -fpgrid grid2d_params.txt. Например: LabProject.exe -ffgeom txt -fpgeom geometry2d.txt -ffgrid txt -fpgrid grid2d_params.txt.
 В решение использованы модульные тесты BoostTest. Для сборки проекта с модульными тестами желателен Release, а не Debug.
 Описание входящих файлов:
