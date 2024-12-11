@@ -57,4 +57,4 @@ https://manpages.debian.org/jessie/mlpack-doc/old_boost_test_definitions.hpp.3
 19)	Статья про явные преобразования типов: https://metanit.com/cpp/tutorial/2.4.php 
 20)	Явное объявление типов шаблона: https://habr.com/ru/articles/235831/ 
 https://spec-zone.ru/cpp/language/class_template
-21)Это про оформление README.md: https://skillbox.ru/media/code/yazyk-razmetki-markdown-shpargalka-po-sintaksisu-s-primerami/#stk-12
+21) Это про оформление README.md: https://skillbox.ru/media/code/yazyk-razmetki-markdown-shpargalka-po-sintaksisu-s-primerami/#stk-12
