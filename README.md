@@ -166,9 +166,9 @@ https://manpages.debian.org/jessie/mlpack-doc/old_boost_test_definitions.hpp.3
 19)	Статья про явные преобразования типов: https://metanit.com/cpp/tutorial/2.4.php 
 20)	Явное объявление типов шаблона: https://habr.com/ru/articles/235831/ 
 https://spec-zone.ru/cpp/language/class_template
-21)Статья про BoostTest (использование):
+21) Статья про BoostTest (использование):
 https://pro-prof.com/archives/1549
-22)Спецификатор Noexcept, особенно в стандарте С++17 в сложных решениях для контроля над исключениями и выполнением компиляции (делала отладку проблемы с кучей):
+22) Спецификатор Noexcept, особенно в стандарте С++17 в сложных решениях для контроля над исключениями и выполнением компиляции (делала отладку проблемы с кучей):
 https://learn.microsoft.com/ru-ru/cpp/cpp/noexcept-cpp?view=msvc-170
 https://www.geeksforgeeks.org/noexcept-specifier-in-cpp-17/
 23) Про различные конструкторы (отсылка к реализации VectorHCS):https://pvoid.pro/index.php/11-remarks/cplusplus/16-special-members#article-header-2
