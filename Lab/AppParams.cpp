@@ -23,7 +23,7 @@ bool AppParams::ParseCommandLine(int argc, char* argv[]) {
 
         // »спользуем auto дл€ автоматического определени€ типа дл€ итератора
         // “ип: std::map<std::string, std::string*>::iterator
-        //iterator - дл€ контейнера дл€ использовани€ second(value), first(key)
+        // iterator - дл€ контейнера дл€ использовани€ second(value), first(key)
         auto it = argMap.find(arg); // ѕоиск аргумента в карте
 
         if (it != argMap.end()) { // ≈сли найден

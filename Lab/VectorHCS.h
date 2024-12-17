@@ -3,6 +3,8 @@
 #include "Cluster.h"
 #include <stdexcept>
 #include <iostream>
+#include <chrono>
+#include <vector>
 
 struct VectorParams {
     size_t size;       // Общий размер вектора
@@ -14,177 +16,67 @@ struct VectorParams {
 template <typename T>
 class VectorHCS {
 public:
-    VectorHCS(const VectorParams& vparams, Cluster* cluster)
-        : _size(vparams.size), _blockSize(vparams.blockSize),
-        _nodeOffset(vparams.nodeOffset), _deviceOffset(vparams.deviceOffset),
-        _cluster(cluster) {
-        if (_size == 0) {
-            throw std::invalid_argument("Vector size must be greater than zero");
-        }
-        if (_blockSize == 0) {
-            throw std::invalid_argument("Block size must be greater than zero");
-        }
-        if (_size % _blockSize != 0) {
-            throw std::invalid_argument("Vector size must be a multiple of block size");
-        }
 
-        _numNodes = _cluster->GetNodeCount();
-        _numBlocks = _size / _blockSize;
+    // Конструктор
+    VectorHCS(const VectorParams& vparams, Cluster* cluster);
 
-        if (_numBlocks > _numNodes) {
-            throw std::invalid_argument("Number of blocks exceeds number of nodes");
-        }
+    // Деструктор
+    ~VectorHCS();
 
-        // Распределяем блоки по узлам и устройствам
-        size_t currentNode = _nodeOffset;
-        size_t currentDevice = _deviceOffset;
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            if (currentNode >= _numNodes) {
-                throw std::runtime_error("Not enough nodes to distribute blocks");
-            }
-            const ClusterNode* node = _cluster->GetNode(currentNode);
-            if (!node) {
-                throw std::runtime_error("Invalid node in cluster");
-            }
+    // Конструктор копирования
+    VectorHCS(const VectorHCS& other);
 
-            // Выбираем устройство внутри узла
-            size_t deviceIndex = currentDevice % node->GetGpuSpecs().size();
-            if (deviceIndex >= node->GetGpuSpecs().size()) {
-                throw std::runtime_error("Not enough devices in node");
-            }
+    // Оператор копирующего присваивания
+    VectorHCS& operator=(const VectorHCS& other);
 
-            _blocks.push_back({ node, deviceIndex, new std::vector<T>(_blockSize) });
-            ++currentDevice;
-            if (currentDevice >= node->GetGpuSpecs().size()) {
-                currentDevice = 0;
-                ++currentNode;
-            }
+    // Конструктор перемещения
+    VectorHCS(VectorHCS&& other) noexcept;
 
-            // Отладочное сообщение
-            std::cout << "Block " << i << ": Node " << currentNode << ", Device " << deviceIndex << std::endl;
-        }
-    }
+    // Оператор перемещающего присваивания
+    VectorHCS& operator=(VectorHCS&& other) noexcept;
 
-    ~VectorHCS() {
-        for (auto& block : _blocks) {
-            delete block.data;
-        }
-    }
+    // Оператор доступа для изменения
+    T& operator[](size_t index);
 
-    T& operator[](size_t index) {
-        size_t blockIndex = index / _blockSize;
-        size_t localIndex = index % _blockSize;
+    // Оператор доступа для чтения
+    const T& operator[](size_t index) const;
 
-        if (blockIndex >= _blocks.size()) {
-            throw std::out_of_range("Index out of range");
-        }
+    // Оператор для сложения векторов
+    VectorHCS operator+(const VectorHCS& other) const;
 
-        return (*_blocks[blockIndex].data)[localIndex];
-    }
+    // Оператор для вычитания векторов
+    VectorHCS operator-(const VectorHCS& other) const;
 
-    const T& operator[](size_t index) const {
-        size_t blockIndex = index / _blockSize;
-        size_t localIndex = index % _blockSize;
+    // Оператор для умножения векторов
+    VectorHCS<T> operator*(const VectorHCS& other) const;
 
-        if (blockIndex >= _blocks.size()) {
-            throw std::out_of_range("Index out of range");
-        }
+    // Умножение вектора на скаляр
+    void ScaleVector(T scalar);
 
-        return (*_blocks[blockIndex].data)[localIndex];
-    }
+    // Скалярное произведение двух векторов
+    T DotProduct(const VectorHCS& other) const;
 
-    VectorHCS operator+(const VectorHCS& other) const {
-        if (_size != other._size || _blockSize != other._blockSize) {
-            throw std::invalid_argument("Vectors must have the same size and block size");
-        }
-
-        VectorHCS result(*this);
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            for (size_t j = 0; j < _blockSize; ++j) {
-                (*result._blocks[i].data)[j] += (*other._blocks[i].data)[j];
-            }
-        }
-        return result;
-    }
-
-    VectorHCS operator-(const VectorHCS& other) const {
-        if (_size != other._size || _blockSize != other._blockSize) {
-            throw std::invalid_argument("Vectors must have the same size and block size");
-        }
-
-        VectorHCS result(*this);
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            for (size_t j = 0; j < _blockSize; ++j) {
-                (*result._blocks[i].data)[j] -= (*other._blocks[i].data)[j];
-            }
-        }
-        return result;
-    }
-
-    T operator*(const VectorHCS& other) const {
-        if (_size != other._size || _blockSize != other._blockSize) {
-            throw std::invalid_argument("Vectors must have the same size and block size");
-        }
-
-        T result = 0;
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            for (size_t j = 0; j < _blockSize; ++j) {
-                result += (*_blocks[i].data)[j] * (*other._blocks[i].data)[j];
-            }
-        }
-        return result;
-    }
-
-    void ScaleVector(T scalar) {
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            for (size_t j = 0; j < _blockSize; ++j) {
-                (*_blocks[i].data)[j] *= scalar;
-            }
-        }
-    }
-
-    T DotProduct(const VectorHCS& other) const {
-        if (_size != other._size || _blockSize != other._blockSize) {
-            throw std::invalid_argument("Vectors must have the same size and block size");
-        }
-
-        T result = 0;
-        for (size_t i = 0; i < _numBlocks; ++i) {
-            for (size_t j = 0; j < _blockSize; ++j) {
-                result += (*_blocks[i].data)[j] * (*other._blocks[i].data)[j];
-            }
-        }
-        return result;
-    }
+    // Метод для вывода данных вектора
+    void Print(const std::string& name) const;
 
 private:
+
+    /* Тут я изменила структуру класса, теперь в классе есть структура Block, содержащая указатель на узел,
+    индекс утройства в узле и соответственно уже распределенные данные для этого узла.
+    Фактически переменные класса остались такими же, просто изменился подход на более удобный */
+
     struct Block {
-        const ClusterNode* node;
-        size_t deviceIndex;
-        std::vector<T>* data;
+        const ClusterNode* node; // Указатель на узел
+        size_t deviceIndex; // Индекс устройства на узле
+        std::vector<T>* data; // Данные для узла
     };
 
-    size_t _size;
-    size_t _blockSize;
-    size_t _nodeOffset;
-    size_t _deviceOffset;
-    size_t _numNodes;
-    size_t _numBlocks;
-    Cluster* _cluster;
-    std::vector<Block> _blocks;
+    size_t _size; // Размер вектора
+    size_t _blockSize; // Размер блока
+    size_t _nodeOffset; // Смещение для узла
+    size_t _deviceOffset; // Смещение для устройств
+    size_t _numNodes; // Количество узлов
+    size_t _numBlocks; // Количество блоков
+    Cluster* _cluster; // Кластер, в котором будет распределение по узлам
+    std::vector<Block> _blocks; // Вектор блоков с данными для каждого блока
 };
-
-// Явная инстанциация для типов
-// Явная инстанциация для стандартных числовых типов
-
-template class VectorHCS<int>;                       // int: 32-битное целое число (в большинстве сред).
-template class VectorHCS<unsigned int>;              // unsigned int: Беззнаковое 32-битное целое число.
-template class VectorHCS<short>;                     // short: Обычно 16-битное целое число.
-template class VectorHCS<unsigned short>;            // unsigned short: Беззнаковое 16-битное целое число.
-template class VectorHCS<long>;                       // long: Обычно 32-битное целое, но в некоторых средах это 64-битное целое (например, на 64-разрядных системах).
-template class VectorHCS<unsigned long>;              // unsigned long: Беззнаковое представление long.
-template class VectorHCS<long long>;                 // long long: Гарантирует минимум 64 бита.
-template class VectorHCS<unsigned long long>;        // unsigned long long: Беззнаковое представление long long.
-template class VectorHCS<float>;                      // float: Обычно 32-битное представление числа с плавающей точкой.
-template class VectorHCS<double>;                     // double: Обычно 64-битное представление числа с плавающей точкой.
-template class VectorHCS<long double>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.

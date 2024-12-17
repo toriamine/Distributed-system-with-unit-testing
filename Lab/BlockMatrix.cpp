@@ -21,16 +21,17 @@ BlockMatrix<T, MatrixType>::~BlockMatrix() {
 template<typename T, template <typename> class MatrixType>
 void BlockMatrix<T, MatrixType>::CreateBlock(size_t row, size_t col, MatrixType<T>* block) {
     if (row >= _RowsBlock || col >= _ColsBlock) {
-        throw std::out_of_range("Индекс блока вышел за диапазон");
+        throw std::out_of_range("Индекс блока вышел за диапазон.");
     }
     delete blocks[row][col];
     blocks[row][col] = block;
 }
 
-// Модифицируемый оператор ()
+// Оператор доступа к элементу для изменения
 template<typename T, template <typename> class MatrixType>
 T& BlockMatrix<T, MatrixType>::operator()(size_t i, size_t j) {
-    /*Т.к. блоки установлены в единую матрицу, то доступ к ним будет в единой матрице, а не по отдельным блокам*/
+    /*Т.к. блоки установлены в единую матрицу, то доступ к ним будет в единой матрице, а не по отдельным блокам.
+    Оператор преобразует глобальные индексы в локальные индексы внутри соответствующего блока.*/
     if (blocks[i / _FullRowsBlockSize][j / _FullColsBlockSize]) {
         return (*blocks[i / _FullRowsBlockSize][j / _FullColsBlockSize])(i % _FullRowsBlockSize, j % _FullColsBlockSize);
     }
@@ -39,7 +40,7 @@ T& BlockMatrix<T, MatrixType>::operator()(size_t i, size_t j) {
     }
 }
 
-//Константный оператор ()
+// Оператор доступа к элементу для чтения
 template<typename T, template <typename> class MatrixType>
 const T& BlockMatrix<T, MatrixType>::operator()(size_t i, size_t j) const {
     if (blocks[i / _FullRowsBlockSize][j / _FullColsBlockSize]) {
@@ -67,29 +68,31 @@ template<typename T, template <typename> class MatrixType>
 BlockMatrix<T, MatrixType> BlockMatrix<T, MatrixType>::operator+(const BlockMatrix& other) const {
     // Проверка: совпадает ли количество блоков и размеры каждого блока
     if (_RowsBlock != other._RowsBlock) {
-        throw std::runtime_error("Не совпадает количество блоков по строкам");
-    }
-
-    if (_ColsBlock != other._ColsBlock) {
-        throw std::runtime_error("Не совпадает количество блоков по столбцам");
-    }
-
-    if (_FullRowsBlockSize != other._FullRowsBlockSize) {
         throw std::runtime_error("Не совпадают размеры блоков по строкам");
     }
 
-    if (_FullColsBlockSize != other._FullColsBlockSize) {
+    if (_ColsBlock != other._ColsBlock) {
         throw std::runtime_error("Не совпадают размеры блоков по столбцам");
     }
-    BlockMatrix result(_RowsBlock, _ColsBlock, _FullRowsBlockSize, _FullColsBlockSize);
+
+    if (_FullRowsBlockSize != other._FullRowsBlockSize) {
+        throw std::runtime_error("Не совпадает количество блоков по строкам");
+    }
+
+    if (_FullColsBlockSize != other._FullColsBlockSize) {
+        throw std::runtime_error("Не совпадает количество блоков по столбцам");
+    }
+
+    BlockMatrix res(_RowsBlock, _ColsBlock, _FullRowsBlockSize, _FullColsBlockSize);
+
     for (size_t i = 0; i < _RowsBlock; ++i) {
         for (size_t j = 0; j < _ColsBlock; ++j) {
             if (blocks[i][j] && other.blocks[i][j]) {
-                result.blocks[i][j] = new MatrixType<T>(*blocks[i][j] + *other.blocks[i][j]);
+                res.blocks[i][j] = new MatrixType<T>(*blocks[i][j] + *other.blocks[i][j]);
             }
         }
     }
-    return result;
+    return res;
 }
 
 // Оператор вычитания
@@ -97,29 +100,31 @@ template<typename T, template <typename> class MatrixType>
 BlockMatrix<T, MatrixType> BlockMatrix<T, MatrixType>::operator-(const BlockMatrix& other) const {
     // Проверка: совпадает ли количество блоков и размеры каждого блока
     if (_RowsBlock != other._RowsBlock) {
-        throw std::runtime_error("Не совпадает количество блоков по строкам");
-    }
-
-    if (_ColsBlock != other._ColsBlock) {
-        throw std::runtime_error("Не совпадает количество блоков по столбцам");
-    }
-
-    if (_FullRowsBlockSize != other._FullRowsBlockSize) {
         throw std::runtime_error("Не совпадают размеры блоков по строкам");
     }
 
-    if (_FullColsBlockSize != other._FullColsBlockSize) {
+    if (_ColsBlock != other._ColsBlock) {
         throw std::runtime_error("Не совпадают размеры блоков по столбцам");
     }
-    BlockMatrix result(_RowsBlock, _ColsBlock, _FullRowsBlockSize, _FullColsBlockSize);
+
+    if (_FullRowsBlockSize != other._FullRowsBlockSize) {
+        throw std::runtime_error("Не совпадает количество блоков по строкам");
+    }
+
+    if (_FullColsBlockSize != other._FullColsBlockSize) {
+        throw std::runtime_error("Не совпадает количество блоков по столбцам");
+    }
+
+    BlockMatrix res(_RowsBlock, _ColsBlock, _FullRowsBlockSize, _FullColsBlockSize);
+
     for (size_t i = 0; i < _RowsBlock; ++i) {
         for (size_t j = 0; j < _ColsBlock; ++j) {
             if (blocks[i][j] && other.blocks[i][j]) {
-                result.blocks[i][j] = new MatrixType<T>(*blocks[i][j] - *other.blocks[i][j]);
+                res.blocks[i][j] = new MatrixType<T>(*blocks[i][j] - *other.blocks[i][j]);
             }
         }
     }
-    return result;
+    return res;
 }
 
 // Метод для вывода всей блочной матрицы
@@ -136,12 +141,12 @@ void BlockMatrix<T, MatrixType>::Print() const {
 //Метод Кронекера
 template<typename T, template <typename> class MatrixType>
 BlockMatrix<T, MatrixType> BlockMatrix<T, MatrixType>::kroneckerProduct(const BlockMatrix<T, MatrixType>& other) const {
-    size_t resultBlockRows = _RowsBlock * other._RowsBlock;
-    size_t resultBlockCols = _ColsBlock * other._ColsBlock;
+    size_t resBlockRows = _RowsBlock * other._RowsBlock;
+    size_t resBlockCols = _ColsBlock * other._ColsBlock;
     size_t internalRows = _FullRowsBlockSize * other._FullRowsBlockSize;
     size_t internalCols = _FullColsBlockSize * other._FullColsBlockSize;
 
-    BlockMatrix<T, MatrixType> result(resultBlockRows, resultBlockCols, internalRows, internalCols);
+    BlockMatrix<T, MatrixType> res(resBlockRows, resBlockCols, internalRows, internalCols);
 
     for (size_t i = 0; i < _RowsBlock; ++i) {
         for (size_t j = 0; j < _ColsBlock; ++j) {
@@ -173,23 +178,22 @@ BlockMatrix<T, MatrixType> BlockMatrix<T, MatrixType>::kroneckerProduct(const Bl
                                 }
                             }
 
-                            size_t resultBlockRow = i * other._RowsBlock + k;
-                            size_t resultBlockCol = j * other._ColsBlock + l;
+                            size_t resBlockRow = i * other._RowsBlock + k;
+                            size_t resBlockCol = j * other._ColsBlock + l;
 
-                            result.CreateBlock(resultBlockRow, resultBlockCol, blockProduct);
+                            res.CreateBlock(resBlockRow, resBlockCol, blockProduct);
                         }
                     }
                 }
             }
         }
     }
-    return result;
+    return res;
 }
 
-// Явная инстанциация для стандартных числовых типов и двух типов матриц DiagonalMatrix и DenseMatrix.
+// Явная инстанциация для стандартных числовых типов для двух типов блоков DiagonalMatrix и DenseMatrix.
 
 //Для DenseMatrix
-
 template class BlockMatrix<int, DenseMatrix>;                       // int: 32-битное целое число (в большинстве сред).
 template class BlockMatrix<unsigned int, DenseMatrix>;              // unsigned int: Беззнаковое 32-битное целое число.
 template class BlockMatrix<short, DenseMatrix>;                     // short: Обычно 16-битное целое число.
@@ -203,7 +207,6 @@ template class BlockMatrix<double, DenseMatrix>;                     // double: 
 template class BlockMatrix<long double, DenseMatrix>;                // long double: Обычно расширенное представление числа с плавающей точкой, минимум 80 бит.
 
 //Для DiagonalMatrix
-
 template class BlockMatrix<int, DiagonalMatrix>;                       // int: 32-битное целое число (в большинстве сред).
 template class BlockMatrix<unsigned int, DiagonalMatrix>;              // unsigned int: Беззнаковое 32-битное целое число.
 template class BlockMatrix<short, DiagonalMatrix>;                     // short: Обычно 16-битное целое число.

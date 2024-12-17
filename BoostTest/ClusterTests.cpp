@@ -3,11 +3,13 @@
 #include "../Lab/ClusterNode.cpp"
 #include "../Lab/DeviceSpecs.cpp"
 
-BOOST_AUTO_TEST_SUITE(FullSystemTests)
+BOOST_AUTO_TEST_SUITE(ClusterTests)
 
 // Тестовый случай для проверки всей системы
-BOOST_AUTO_TEST_CASE(FullSystemTest) {
+BOOST_AUTO_TEST_CASE(ClusterTests_FullSystemTest) {
+
     // Тестирование класса DeviceSpecs
+   
     // Проверяем создание экземпляра GpuSpec и его методы
     GpuSpec gpu(8.0, 1.5, 200, 500, 2048, "GDDR6", 36, "DirectX 12");
     BOOST_CHECK_EQUAL(gpu.GetMemory(), 8.0);                  // Проверяем, что объем памяти соответствует
@@ -25,7 +27,7 @@ BOOST_AUTO_TEST_CASE(FullSystemTest) {
     BOOST_CHECK_EQUAL(cpu.GetPower(), 150.0);                  // Проверяем потребляемую мощность
     BOOST_CHECK_EQUAL(cpu.GetThreadCount(), 8);                // Проверяем количество потоков
     BOOST_CHECK_EQUAL(cpu.GetCacheSize(), 12.0);              // Проверяем размер кэш-памяти
-    BOOST_CHECK(cpu.HasIntegratedGraphics());                   // Проверяем наличие встроенной графики
+    BOOST_CHECK(cpu.HasIntegratedGraphics());                 // Проверяем наличие встроенной графики
     BOOST_CHECK_EQUAL(cpu.GetArchitecture(), "x86");           // Проверяем архитектуру
 
     // Проверяем создание экземпляра RamSpec и его методы
@@ -35,7 +37,7 @@ BOOST_AUTO_TEST_CASE(FullSystemTest) {
     BOOST_CHECK_EQUAL(ram.GetLatency(), 16.0);                 // Проверяем задержку
     BOOST_CHECK_EQUAL(ram.GetMemoryType(), "DDR4");            // Проверяем тип памяти
     BOOST_CHECK_EQUAL(ram.GetVoltage(), 1.2);                  // Проверяем рабочее напряжение
-    BOOST_CHECK(ram.HasECC());                                  // Проверяем поддержку ECC
+    BOOST_CHECK(ram.HasECC());                                 // Проверяем поддержку ECC
 
     // Тестирование класса ClusterNode
     // Создаем узел кластера с заданными параметрами
@@ -48,10 +50,22 @@ BOOST_AUTO_TEST_CASE(FullSystemTest) {
         }, {
             {"hdd1", HDDSpec(1000, 160, 150, 7200, 64, "3.5\"", 8.0)} // HDD
         });
+        
+    // Проверяем полученные данные из узла
+    BOOST_CHECK_EQUAL(node.GetRamSpec().GetSize(), 16.0);                 // Проверка размера RAM в узле
+    BOOST_CHECK_EQUAL(node.GetCpuSpec().GetCoreCount(), 4);               // Проверка количества ядер CPU
+    BOOST_CHECK_EQUAL(node.GetGpuSpec().GetMemory(), 8.0);                // Проверка объема основной GPU
+    BOOST_CHECK_EQUAL(node.GetGpuSpecs().at("gpu1").GetMemory(), 4.0);    // Проверка объема дополнительной GPU
+    BOOST_CHECK_EQUAL(node.GetLanSpecs().at("lan1").GetPower(), 10);       // Проверка мощности сетевого адаптера
+    BOOST_CHECK_EQUAL(node.GetSSDSpecs().at("ssd1").GetSize(), 500);       // Проверка размера SSD
+    BOOST_CHECK_EQUAL(node.GetHDDSpecs().at("hdd1").GetSize(), 1000);      // Проверка размера HDD
 
-        // Проверяем получение данных из узла
-        BOOST_CHECK_EQUAL(node.GetRamSpec().GetSize(), 16.0);                 // Проверка размера RAM в узле
+    // Все методы для обновления в узле работают однотипно, можно проверить один из них
+    RamSpec ram1(2244.0, 3200, 16.0, "DDR4", 1.2, "DIMM", true); // Изменен только первый параметр
+    node.AddRam(ram1);
 
+    // Проверяем полученные данные из узла с обновлением
+    BOOST_CHECK_EQUAL(node.GetRamSpec().GetSize(), 2244.0);                 // Проверка размера RAM в узле (Обновлен)
     BOOST_CHECK_EQUAL(node.GetCpuSpec().GetCoreCount(), 4);               // Проверка количества ядер CPU
     BOOST_CHECK_EQUAL(node.GetGpuSpec().GetMemory(), 8.0);                // Проверка объема основной GPU
     BOOST_CHECK_EQUAL(node.GetGpuSpecs().at("gpu1").GetMemory(), 4.0);    // Проверка объема дополнительной GPU
@@ -75,6 +89,6 @@ BOOST_AUTO_TEST_SUITE_END()
 /*
 В этом тесте мы последовательно проверяем:
 1. Функциональность класса DeviceSpecs (проверка Get-методов для различных типов устройств).
-2. Функциональность класса ClusterNode (проверка создания узла и получения информации о нем).
+2. Функциональность класса ClusterNode (проверка создания узла и получения информации о нем, обновление компонентов в узле).
 3. Функциональность класса Cluster (проверка добавления узла и получения узла по идентификатору).
 */

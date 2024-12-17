@@ -2,22 +2,30 @@
 
 // Метод для добавления узла в кластер
 void Cluster::AddNode(const ClusterNode& node) {
-    nodes_.push_back(node); // Добавляем узел в вектор узлов
-    nodeMap_[node.GetNodeId()] = &nodes_.back(); // Сохраняем соответствие идентификатора узла и адреса последнего добавленного узла
+    _nodes.push_back(node); // Добавляем узел в вектор узлов
+    _nodeMap[node.GetNodeId()] = &_nodes.back(); // Сохраняем соответствие идентификатора узла и адреса последнего добавленного узла
 }
 
 // Метод для получения количества узлов в кластере
 std::size_t Cluster::GetNodeCount() const {
-    return nodes_.size(); // Возвращаем размер вектора узлов
+    return _nodes.size(); // Возвращаем размер вектора узлов
 }
 
 // Метод для получения узла по его идентификатору
 const ClusterNode* Cluster::GetNode(const std::string& nodeId) const {
-    auto it = nodeMap_.find(nodeId); // Поиск узла в хэш-таблице по идентификатору
-    if (it != nodeMap_.end()) { // Если узел найден
+    auto it = _nodeMap.find(nodeId); // Поиск узла в хэш-таблице по идентификатору
+    if (it != _nodeMap.end()) { // Если узел найден
         return it->second; // Возвращаем указатель на узел
     }
     return nullptr; // Если узел не найден, возвращаем nullptr
+}
+
+// Метод для получения узла по его идентификатору
+const ClusterNode* Cluster::GetNode(size_t index) const {
+    if (index < _nodes.size()) { // Индекс не должен выходить за пределы количества узлов
+        return &_nodes[index]; //Возврат узла
+    }
+    return nullptr; // Если индекс выходит за пределы количества узлов, возвращаем nullptr
 }
 
 /*

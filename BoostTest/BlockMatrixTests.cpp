@@ -1,17 +1,18 @@
 #include <boost/test/unit_test.hpp>
-#include "../Lab/BlockMatrix.h"
 #include "../Lab/BlockMatrix.cpp"
 
 BOOST_AUTO_TEST_SUITE(BlockMatrixTests) // Начало набора тестов для блочных матриц
 
 // Тестирование конструктора и доступа к элементам блочной матрицы
-BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
-    BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_ConstructorAndAccessTest) {
+
+    BlockMatrix<double, DenseMatrix> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу c блоками 2x2, каждый размером 2x2
 
     BlockMatrix<int, DenseMatrix> a(2, 2, 2, 2);
 
-    // Создаем блочные матрицы 2x2 блоков, каждый из которых 2x2 элементы
-        // Установим значения в блоки
+    // Инициализируем блочную матрицу c блоками 2x2, каждый размером 2x2
+    // Установим значения в блоки
+ 
     // Блок (0, 0):
     // [ 1.0, 2.0 ]
     // [ 3.0, 4.0 ]
@@ -28,7 +29,6 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
     a(0, 2) = 5; a(0, 3) = 6;
     a(1, 2) = 7; a(1, 3) = 8;
 
-
     // Блок (1, 0):
     // [ 9.0, 10.0 ]
     // [ 11.0, 12.0 ]
@@ -43,51 +43,62 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestConstructorAndAccess) {
     a(2, 2) = 13; a(2, 3) = 14;
     a(3, 2) = 15; a(3, 3) = 16;
 
-
     // Проверка доступа к блокам и их элементам
-    BOOST_CHECK_EQUAL(a(0, 0), 1);   //Тест первого элемента первой матрицы
-    BOOST_CHECK_EQUAL(a(0, 3), 6);   // Тест последнего элемента первой строки
-    BOOST_CHECK_EQUAL(a(1, 2), 7);   // Тест элемента из второго блока
-    BOOST_CHECK_EQUAL(a(2, 1), 10);  // Тест элемента второго ряда третьего блока
-    BOOST_CHECK_EQUAL(a(3, 3), 16);  // Тест последнего элемента
+    BOOST_CHECK_EQUAL(a(0, 0), 1);
+    BOOST_CHECK_EQUAL(a(0, 1), 2);
+    BOOST_CHECK_EQUAL(a(0, 2), 5);
+    BOOST_CHECK_EQUAL(a(0, 3), 6);
+    BOOST_CHECK_EQUAL(a(1, 0), 3);
+    BOOST_CHECK_EQUAL(a(1, 1), 4);   
+    BOOST_CHECK_EQUAL(a(1, 2), 7);   
+    BOOST_CHECK_EQUAL(a(1, 3), 8);  
+    BOOST_CHECK_EQUAL(a(2, 0), 9); 
+    BOOST_CHECK_EQUAL(a(2, 1), 10);
+    BOOST_CHECK_EQUAL(a(2, 2), 13);
+    BOOST_CHECK_EQUAL(a(2, 3), 14);
+    BOOST_CHECK_EQUAL(a(3, 0), 11);
+    BOOST_CHECK_EQUAL(a(3, 1), 12);
+    BOOST_CHECK_EQUAL(a(3, 2), 15);
+    BOOST_CHECK_EQUAL(a(3, 3), 16);
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestAddition) {
-    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_AdditionTest) {
+
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2 с блоками 2x2
+    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2 с блоками 2x2
 
     // Заполнение матрицы A
     a.CreateBlock(0, 0, new DenseMatrix<double>(2, 2));
-    a(0, 0) = 1; a(0, 1) = 2; // Заполняем первый блок
+    a(0, 0) = 1; a(0, 1) = 2;
     a(1, 0) = 3; a(1, 1) = 4;
 
     a.CreateBlock(0, 1, new DenseMatrix<double>(2, 2));
-    a(0, 0 + 2) = 5; a(0, 1 + 2) = 6; // Заполняем второй блок (первый блок второй строки)
+    a(0, 0 + 2) = 5; a(0, 1 + 2) = 6;
     a(1, 0 + 2) = 7; a(1, 1 + 2) = 8;
 
     a.CreateBlock(1, 0, new DenseMatrix<double>(2, 2));
-    a(0 + 2, 0) = 9; a(0 + 2, 1) = 10; // Заполняем третий блок (второй блок первой строки)
+    a(0 + 2, 0) = 9; a(0 + 2, 1) = 10;
     a(1 + 2, 0) = 11; a(1 + 2, 1) = 12;
 
     a.CreateBlock(1, 1, new DenseMatrix<double>(2, 2));
-    a(0 + 2, 0 + 2) = 13; a(0 + 2, 1 + 2) = 14; // Заполняем четвертый блок (второй блок второй строки)
+    a(0 + 2, 0 + 2) = 13; a(0 + 2, 1 + 2) = 14;
     a(1 + 2, 0 + 2) = 15; a(1 + 2, 1 + 2) = 16;
 
     // Заполнение матрицы B
     b.CreateBlock(0, 0, new DenseMatrix<double>(2, 2));
-    b(0, 0) = 1; b(0, 1) = 1; // Заполняем первый блок
+    b(0, 0) = 1; b(0, 1) = 1;
     b(1, 0) = 1; b(1, 1) = 1;
 
     b.CreateBlock(0, 1, new DenseMatrix<double>(2, 2));
-    b(0, 0 + 2) = 2; b(0, 1 + 2) = 2; // Заполняем второй блок (первый блок второй строки)
+    b(0, 0 + 2) = 2; b(0, 1 + 2) = 2;
     b(1, 0 + 2) = 2; b(1, 1 + 2) = 2;
 
     b.CreateBlock(1, 0, new DenseMatrix<double>(2, 2));
-    b(0 + 2, 0) = 3; b(0 + 2, 1) = 3; // Заполняем третий блок (второй блок первой строки)
+    b(0 + 2, 0) = 3; b(0 + 2, 1) = 3;
     b(1 + 2, 0) = 3; b(1 + 2, 1) = 3;
 
     b.CreateBlock(1, 1, new DenseMatrix<double>(2, 2));
-    b(0 + 2, 0 + 2) = 4; b(0 + 2, 1 + 2) = 4; // Заполняем четвертый блок (второй блок второй строки)
+    b(0 + 2, 0 + 2) = 4; b(0 + 2, 1 + 2) = 4;
     b(1 + 2, 0 + 2) = 4; b(1 + 2, 1 + 2) = 4;
 
     // Выполняем операцию сложения
@@ -115,11 +126,13 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestAddition) {
     BOOST_CHECK_EQUAL(c(2, 3), 18);  // 14 + 4
     BOOST_CHECK_EQUAL(c(3, 2), 19);  // 15 + 4
     BOOST_CHECK_EQUAL(c(3, 3), 20);  // 16 + 4
+
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtraction) {
-    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_SubtractionTest) {
+
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2 с блоками 2x2
+    BlockMatrix<double, DenseMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2 с блоками 2x2
 
     // Заполнение матрицы A
     a.CreateBlock(0, 0, new DenseMatrix<double>(2, 2));
@@ -181,36 +194,40 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtraction) {
 }
 
 // Тестирование сложения несовместимых матриц
-BOOST_AUTO_TEST_CASE(BlockMatrixTestIncompatibleAddition) {
-    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DenseMatrix> b(3, 2, 2, 2); // Создаем вторую блочную матрицу 3x2 (несовместимый размер)
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_IncompatibleAdditionTest) {
+
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу с блоками 2x2
+    BlockMatrix<double, DenseMatrix> b(3, 2, 2, 2); // Создаем вторую блочную матрицу с блоками 3x2 (несовместимый размер)
 
     // Проверяем, что сложение этих матриц вызывает исключение
     BOOST_CHECK_THROW(a + b, std::runtime_error);
+
 }
 
-// Тестирование умножения несовместимых матриц
-BOOST_AUTO_TEST_CASE(BlockMatrixTestIncompatibleMultiplication) {
-    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DenseMatrix> b(3, 2, 2, 2); // Создаем вторую блочную матрицу 3x2 (несовместимые размеры)
+// Тестирование вычитания несовместимых матриц
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_IncompatibleMultiplicationTest) {
 
-    // Проверяем, что умножение этих матриц вызывает исключение
+    BlockMatrix<double, DenseMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу с блоками 2x2
+    BlockMatrix<double, DenseMatrix> b(3, 2, 2, 2); // Создаем вторую блочную матрицу с блоками 3x2 (несовместимые размеры)
+
+    // Проверяем, что вычитание этих матриц вызывает исключение
     BOOST_CHECK_THROW(a - b, std::runtime_error);
+
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestKroneckerProduct) {
-    // Создаем блочные матрицы 1x1 с блоками размером 2x2
-    BlockMatrix<int, DenseMatrix> A(1, 1, 2, 2); // 1 блок по 2 строки, 1 блок по 2 столбца
-    BlockMatrix<int, DenseMatrix> B(1, 1, 2, 2); // 1 блок по 2 строки, 1 блок по 2 столбца
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDense_KroneckerProductTest) {
+
+    BlockMatrix<int, DenseMatrix> A(1, 1, 2, 2);
+    BlockMatrix<int, DenseMatrix> B(1, 1, 2, 2);
 
     // Заполнение матрицы A
     A.CreateBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок A[0][0]
-    A(0, 0) = 1; A(0, 1) = 2; // Заполняем первый блок
+    A(0, 0) = 1; A(0, 1) = 2;
     A(1, 0) = 3; A(1, 1) = 4;
 
     // Заполнение матрицы B
     B.CreateBlock(0, 0, new DenseMatrix<int>(2, 2)); // Блок B[0][0]
-    B(0, 0) = 5; B(0, 1) = 6; // Заполняем первый блок
+    B(0, 0) = 5; B(0, 1) = 6;
     B(1, 0) = 7; B(1, 1) = 8;
 
     // Выполнить произведение Кронекера
@@ -238,11 +255,12 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestKroneckerProduct) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestDiagonalConstructorAndAccess) {
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_ConstructorAndAccessTest) {
+
     BlockMatrix<double, DiagonalMatrix> blockMatrix(2, 2, 2, 2); // Создаем блочную матрицу из 2x2 блоков, каждый размером 2x2
 
-    // Создаем блочные матрицы 2x2 блоков, каждый из которых 2x2 элементы
     // Установим значения в блоки
+    
     // Блок (0, 0):
     // [ 1.0, 0.0 ]
     // [ 0.0, 2.0 ]
@@ -263,20 +281,32 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestDiagonalConstructorAndAccess) {
     // [ 0.0, 8.0 ]
     blockMatrix.CreateBlock(1, 1, new DiagonalMatrix<double>({ 7, 8 }));
 
-    // Проверка доступа к блокам и их элементам
-    BOOST_CHECK_EQUAL(blockMatrix(0, 0), 1);   // Проверяем первый элемент первого блока
-    BOOST_CHECK_EQUAL(blockMatrix(1, 1), 2);   // Проверяем второй элемент первого блока
-    BOOST_CHECK_EQUAL(blockMatrix(0, 2), 3);   // Проверяем первый элемент второго блока
-    BOOST_CHECK_EQUAL(blockMatrix(1, 3), 4);   // Проверяем второй элемент второго блока
-    BOOST_CHECK_EQUAL(blockMatrix(2, 0), 5);   // Проверяем первый элемент третьего блока
-    BOOST_CHECK_EQUAL(blockMatrix(3, 1), 6);   // Проверяем второй элемент третьего блока
-    BOOST_CHECK_EQUAL(blockMatrix(2, 2), 7);   // Проверяем первый элемент четвертого блока
-    BOOST_CHECK_EQUAL(blockMatrix(3, 3), 8);   // Проверяем второй элемент четвертого блока
+    // Проверка доступа к блокам и их диагональным элементам
+    BOOST_CHECK_EQUAL(blockMatrix(0, 0), 1);   
+    BOOST_CHECK_EQUAL(blockMatrix(1, 1), 2);   
+    BOOST_CHECK_EQUAL(blockMatrix(0, 2), 3);   
+    BOOST_CHECK_EQUAL(blockMatrix(1, 3), 4);   
+    BOOST_CHECK_EQUAL(blockMatrix(2, 0), 5);   
+    BOOST_CHECK_EQUAL(blockMatrix(3, 1), 6);   
+    BOOST_CHECK_EQUAL(blockMatrix(2, 2), 7);   
+    BOOST_CHECK_EQUAL(blockMatrix(3, 3), 8);   
+
+    // Недиагональные элементы
+    BOOST_CHECK_EQUAL(blockMatrix(0, 1), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(0, 3), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(1, 0), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(1, 2), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(2, 1), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(2, 3), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(3, 0), 0);   
+    BOOST_CHECK_EQUAL(blockMatrix(3, 2), 0);   
+
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestAdditionDiagonal) {
-    BlockMatrix<double, DiagonalMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DiagonalMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_AdditionDiagonalTest) {
+
+    BlockMatrix<double, DiagonalMatrix> a(2, 2, 2, 2);
+    BlockMatrix<double, DiagonalMatrix> b(2, 2, 2, 2);
 
     // Заполнение матрицы A
     a.CreateBlock(0, 0, new DiagonalMatrix<double>({ 1, 2 })); // Блок (0, 0)
@@ -302,36 +332,56 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestAdditionDiagonal) {
     BOOST_CHECK_EQUAL(c(3, 1), 9);   // 6 + 3
     BOOST_CHECK_EQUAL(c(2, 2), 11);  // 7 + 4
     BOOST_CHECK_EQUAL(c(3, 3), 12);  // 8 + 4
+
+    // Недиагональные элементы
+    BOOST_CHECK_EQUAL(c(0, 1), 0);
+    BOOST_CHECK_EQUAL(c(0, 3), 0);
+    BOOST_CHECK_EQUAL(c(1, 0), 0);
+    BOOST_CHECK_EQUAL(c(1, 2), 0);
+    BOOST_CHECK_EQUAL(c(2, 1), 0);
+    BOOST_CHECK_EQUAL(c(2, 3), 0);
+    BOOST_CHECK_EQUAL(c(3, 0), 0);
+    BOOST_CHECK_EQUAL(c(3, 2), 0);
+
 }
 
-BOOST_AUTO_TEST_CASE(IncompatibleBlockMatrixAdditionTest) {
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_IncompatibleAdditionTest) {
+
     BlockMatrix<int, DiagonalMatrix> blockMatrixA(2, 2, 2, 2);
+
     blockMatrixA.CreateBlock(0, 0, new DiagonalMatrix<int>({ 1, 4 }));
 
-    BlockMatrix<int, DiagonalMatrix> blockMatrixB(3, 3, 2, 2); // Несовместимые размеры (3x3)
+    BlockMatrix<int, DiagonalMatrix> blockMatrixB(3, 3, 2, 2); // Несовместимые размеры блока (3x3)
 
     BOOST_CHECK_THROW(blockMatrixA + blockMatrixB, std::runtime_error);
+
 }
 
-BOOST_AUTO_TEST_CASE(IncompatibleBlockMatrixMultiplicationTest) {
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_IncompatibleMultiplicationTest) {
+
     BlockMatrix<int, DiagonalMatrix> blockMatrixA(3, 2, 2, 2); // 3 строки, 2 колонки
     BlockMatrix<int, DiagonalMatrix> blockMatrixB(2, 3, 2, 2); // 2 строки, 3 колонки
 
     BOOST_CHECK_THROW(blockMatrixA - blockMatrixB, std::runtime_error); // Ожидаем исключение
+
 }
 
-BOOST_AUTO_TEST_CASE(IncompatibleBlockMatrixAdditionTestBlock) {
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_IncompatibleAdditionBlockTest) {
+
     BlockMatrix<int, DiagonalMatrix> blockMatrixA(2, 2, 2, 2);
+
     blockMatrixA.CreateBlock(0, 0, new DiagonalMatrix<int>({ 1, 4 }));
 
     BlockMatrix<int, DiagonalMatrix> blockMatrixB(2, 2, 2, 1); // Разное количество блоков
 
     BOOST_CHECK_THROW(blockMatrixA + blockMatrixB, std::runtime_error);
+
 }
 
-BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtractionDiagonal) {
-    BlockMatrix<double, DiagonalMatrix> a(2, 2, 2, 2); // Создаем первую блочную матрицу 2x2
-    BlockMatrix<double, DiagonalMatrix> b(2, 2, 2, 2); // Создаем вторую блочную матрицу 2x2
+BOOST_AUTO_TEST_CASE(BlockMatrixTests_TypeDiagonal_Subtraction) {
+
+    BlockMatrix<double, DiagonalMatrix> a(2, 2, 2, 2);
+    BlockMatrix<double, DiagonalMatrix> b(2, 2, 2, 2);
 
     // Заполнение матрицы A
     a.CreateBlock(0, 0, new DiagonalMatrix<double>({ 5, 6 })); // Блок (0, 0)
@@ -357,6 +407,17 @@ BOOST_AUTO_TEST_CASE(BlockMatrixTestSubtractionDiagonal) {
     BOOST_CHECK_EQUAL(c(3, 1), 7);   // 10 - 3
     BOOST_CHECK_EQUAL(c(2, 2), 7);   // 11 - 4
     BOOST_CHECK_EQUAL(c(3, 3), 8);   // 12 - 4
+
+    // Недиагональные элементы
+    BOOST_CHECK_EQUAL(c(0, 1), 0);
+    BOOST_CHECK_EQUAL(c(0, 3), 0);
+    BOOST_CHECK_EQUAL(c(1, 0), 0);
+    BOOST_CHECK_EQUAL(c(1, 2), 0);
+    BOOST_CHECK_EQUAL(c(2, 1), 0);
+    BOOST_CHECK_EQUAL(c(2, 3), 0);
+    BOOST_CHECK_EQUAL(c(3, 0), 0);
+    BOOST_CHECK_EQUAL(c(3, 2), 0);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

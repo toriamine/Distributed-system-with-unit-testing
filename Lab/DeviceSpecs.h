@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string>
-// Класс GpuSpec хранит спецификации графической карты.
+
+// Класс GpuSpec хранит спецификации графической карты
 class GpuSpec {
 public:
+
     // Конструктор по умолчанию
     GpuSpec()
         : _memory(0), _clockSpeed(0), _power(0), _bandwidth(0),
@@ -39,8 +41,7 @@ private:
     std::string _apiSupport;  // Поддерживаемые API (например, DirectX, OpenGL)
 };
 
-
-// Класс CpuSpec хранит спецификации процессора.
+// Класс CpuSpec хранит спецификации процессора
 class CpuSpec {
 public:
     // Конструктор по умолчанию
@@ -48,7 +49,7 @@ public:
         : _coreCount(0), _clockSpeed(0.0), _power(0.0),
         _thermalDesignPower(0.0), _threadCount(0),
         _cacheSize(0.0), _hasIntegratedGraphics(false),
-        _architecture("") {} // Инициализация значений по умолчанию
+        _architecture("") {}
 
     // Конструктор с параметрами
     CpuSpec(int coreCount, double clockSpeed, double power, double thermalDesignPower,
@@ -76,19 +77,18 @@ private:
     double _thermalDesignPower;     // Тепловая мощность в Вт
     int _threadCount;               // Количество потоков
     double _cacheSize;              // Размер кэш-памяти (L1, L2, L3)
-    bool _hasIntegratedGraphics;     // Наличие встроенной графики
+    bool _hasIntegratedGraphics;    // Наличие встроенной графики
     std::string _architecture;      // Архитектура (например, x86, ARM)
 };
 
-
-// Класс RamSpec хранит спецификации оперативной памяти.
+// Класс RamSpec хранит спецификации оперативной памяти
 class RamSpec {
 public:
     // Конструктор по умолчанию
     RamSpec()
         : _size(0.0), _mhz(0.0), _latency(0.0),
         _memoryType(""), _voltage(0.0),
-        _formFactor(""), _hasECC(false) {} // Инициализация значений по умолчанию
+        _formFactor(""), _hasECC(false) {}
 
     // Конструктор с параметрами
     RamSpec(double size, double mhz, double latency, const std::string& memoryType,
@@ -116,13 +116,13 @@ private:
     bool _hasECC;         // Поддержка ECC
 };
 
-// Класс LanSpec хранит спецификации сетевого адаптера.
+// Класс LanSpec хранит спецификации сетевого адаптера
 class LanSpec {
 public:
     // Конструктор по умолчанию
     LanSpec()
         : _power(0.0), _bandwidth(0.0), _interfaceType(""),
-        _protocolStandard(""), _latency(0.0) {} // Инициализация значений по умолчанию
+        _protocolStandard(""), _latency(0.0) {}
 
     // Конструктор с параметрами
     LanSpec(double power, double bandwidth, const std::string& interfaceType,
@@ -146,7 +146,7 @@ private:
     double _latency;                   // Задержка передачи данных
 };
 
-// Класс SSDSpec хранит спецификации SSD (твердотельных накопителей).
+// Класс SSDSpec хранит спецификации SSD (твердотельных накопителей)
 class SSDSpec {
 public:
     // Конструктор по умолчанию
@@ -154,7 +154,7 @@ public:
         : _size(0.0), _readSpeed(0.0), _writeSpeed(0.0),
         _formFactor(""), _interfaceType(""),
         _randomReadSpeed(0.0), _randomWriteSpeed(0.0),
-        _endurance(0.0) {} // Инициализация значений по умолчанию
+        _endurance(0.0) {}
 
     // Конструктор с параметрами
     SSDSpec(double size, double readSpeed, double writeSpeed, const std::string& formFactor,
@@ -186,14 +186,14 @@ private:
     double _endurance;              // Надежность (TBW)
 };
 
-// Класс HDDSpec хранит спецификации HDD (жестких дисков).
+// Класс HDDSpec хранит спецификации HDD (жестких дисков)
 class HDDSpec {
 public:
     // Конструктор по умолчанию
     HDDSpec()
         : _size(0.0), _readSpeed(0.0), _writeSpeed(0.0),
         _rpm(0), _bufferSize(0.0),
-        _formFactor(""), _averageSeekTime(0.0) {} // Инициализация значений по умолчанию
+        _formFactor(""), _averageSeekTime(0.0) {}
 
     // Конструктор с параметрами
     HDDSpec(double size, double readSpeed, double writeSpeed, int rpm,

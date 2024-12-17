@@ -1,4 +1,4 @@
-#pragma once // Защита от многократного подключения файла
+#pragma once
 
 #include "Matrix.h"
 #include "DenseMatrix.h"
@@ -10,12 +10,17 @@
 template <typename T, template<typename> class MatrixType>
 class BlockMatrix : public Matrix<T> {
 private:
-    /*Инструкция по использованию можно инициализировать любое количество блоков матрицы, но каждый блок 
-    является частью матрицы и каждый элемент блока становится элементом этой блочной матрицы.
-    */
+
+    /* Инструкция по использованию: можно инициализировать любое количество блоков блочной матрицы, блочные матрицы
+    могут быть двух типов (диагональные или плотные) и состоять соответственно из блоков совего типа.
+    Каждый элемент блока становится элементом единой блочной матрицы.*/
+
     std::vector<std::vector<MatrixType<T>*>> blocks;//инициализация двумерной матрицы
+
     size_t _RowsBlock, _ColsBlock;//инициализация количества строк и столбцов в блоке
+
     size_t _FullRowsBlockSize, _FullColsBlockSize;//сколько блоков в блочной матрице по блокам и столбцам
+
 public:
     BlockMatrix(size_t blockRows, size_t blockCols, size_t blockSizeRows, size_t blockSizeCols);
 

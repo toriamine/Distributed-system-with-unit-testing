@@ -1,36 +1,45 @@
 #include "DenseMatrix.h"
 
-// Реализация конструктора
 template <typename T>
-DenseMatrix<T>::DenseMatrix(size_t rows, size_t cols) : rows_(rows), cols_(cols), data(rows, std::vector<T>(cols, T(0))) {}
+DenseMatrix<T>::DenseMatrix(size_t rows, size_t cols) : _rows(rows), _cols(cols), data(rows, std::vector<T>(cols, T(0))) {}
 
 template <typename T>
 DenseMatrix<T>::DenseMatrix(std::initializer_list<std::initializer_list<T>> list) {
-    rows_ = list.size();
-    cols_ = (list.size() > 0) ? list.begin()->size() : 0;
-    data.resize(rows_);
-    size_t i = 0;
-    for (auto& row : list) {
-        data[i++] = row;
-    }
 
-    /*Или просто for (const auto& value : list) {
-            diagonalElements.push_back(value);
-        }
-        //Из Vector
-    */
+    // Определяем количество строк как размер инициализирующего списка
+    _rows = list.size();
+
+    // Определяем количество столбцов как размер первой строки (если список не пуст)
+    _cols = (list.size() > 0) ? list.begin()->size() : 0;
+
+    // Изменяем размер вектора data на количество строк
+    data.resize(_rows);
+
+    // Итератор для прохода по каждой строке инициализирующего списка
+    typename std::initializer_list<std::initializer_list<T>>::iterator row_it = list.begin();
+
+    // Индекс для прохода по вектору data
+    size_t i = 0;
+
+    // Проходим по каждой строке инициализирующего списка
+    while (row_it != list.end()) {
+        // Присваиваем текущую строку из инициализирующего списка соответствующей строке в data
+        data[i++] = *row_it;
+        // Переходим к следующей строке
+        ++row_it;
+    }
 }
 
 // Конструктор копирования
 template <typename T>
-DenseMatrix<T>::DenseMatrix(const DenseMatrix<T>& other) : rows_(other.rows_), cols_(other.cols_), data(other.data) {}
+DenseMatrix<T>::DenseMatrix(const DenseMatrix<T>& other) : _rows(other._rows), _cols(other._cols), data(other.data) {}
 
 // Оператор присваивания
 template <typename T>
 DenseMatrix<T>& DenseMatrix<T>::operator=(const DenseMatrix<T>& other) {
     if (this != &other) {
-        rows_ = other.rows_;
-        cols_ = other.cols_;
+        _rows = other._rows;
+        _cols = other._cols;
         data = other.data;
     }
     return *this;
@@ -38,41 +47,41 @@ DenseMatrix<T>& DenseMatrix<T>::operator=(const DenseMatrix<T>& other) {
 
 // Деструктор
 template <typename T>
-DenseMatrix<T>::~DenseMatrix() {}; // Можно просто использовать default
+DenseMatrix<T>::~DenseMatrix() {};
 
-// Оператор доступа к элементу (модифицируемый)
+
 template <typename T>
 T& DenseMatrix<T>::operator()(size_t i, size_t j) {
-    if (i >= rows_ || j >= cols_) {
-        throw std::out_of_range("Index out of range");
+    if (i >= _rows || j >= _cols) {
+        throw std::out_of_range("Индекс вне диапазона.");
     }
     return data[i][j];
 }
 
-// Оператор доступа к элементу (константный)
 template <typename T>
 const T& DenseMatrix<T>::operator()(size_t i, size_t j) const {
-    if (i >= rows_ || j >= cols_) {
-        throw std::out_of_range("Index out of range");
+    if (i >= _rows || j >= _cols) {
+        throw std::out_of_range("Индекс вне диапазона.");
     }
     return data[i][j];
 }
 
-// Метод получения количества строк
+// Метод для получения количества строк
 template <typename T>
 size_t DenseMatrix<T>::rows() const {
-    return rows_;
+    return _rows;
 }
 
-// Метод получения количества столбцов
+// Метод для получения количества столбцов
 template <typename T>
 size_t DenseMatrix<T>::cols() const {
-    return cols_;
+    return _cols;
 }
 
 // Оператор сложения
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator+(const DenseMatrix<T>& other) const {
+
     // Проверка на несовместимые размеры
     if (rows() != other.rows()) {
         throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
@@ -81,18 +90,21 @@ DenseMatrix<T> DenseMatrix<T>::operator+(const DenseMatrix<T>& other) const {
         throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
-    DenseMatrix<T> result(rows_, cols_);
-    for (size_t i = 0; i < rows_; ++i) {
-        for (size_t j = 0; j < cols_; ++j) {
-            result(i, j) = (*this)(i, j) + other(i, j);
+    DenseMatrix<T> res(_rows, _cols);
+
+    for (size_t i = 0; i < _rows; ++i) {
+        for (size_t j = 0; j < _cols; ++j) {
+            res(i, j) = (*this)(i, j) + other(i, j);
         }
     }
-    return result;
+    return res;
+
 }
 
 // Оператор вычитания
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator-(const DenseMatrix<T>& other) const {
+
     // Проверка на несовместимые размеры
     if (rows() != other.rows()) {
         throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
@@ -101,18 +113,21 @@ DenseMatrix<T> DenseMatrix<T>::operator-(const DenseMatrix<T>& other) const {
         throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
-    DenseMatrix<T> result(rows_, cols_);
-    for (size_t i = 0; i < rows_; ++i) {
-        for (size_t j = 0; j < cols_; ++j) {
-            result(i, j) = (*this)(i, j) - other(i, j);
+    DenseMatrix<T> res(_rows, _cols);
+
+    for (size_t i = 0; i < _rows; ++i) {
+        for (size_t j = 0; j < _cols; ++j) {
+            res(i, j) = (*this)(i, j) - other(i, j);
         }
     }
-    return result;
+    return res;
+
 }
 
 // Оператор умножения
 template <typename T>
 DenseMatrix<T> DenseMatrix<T>::operator*(const DenseMatrix<T>& other) const {
+
     // Проверка на несовместимые размеры
     if (rows() != other.rows()) {
         throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
@@ -121,33 +136,35 @@ DenseMatrix<T> DenseMatrix<T>::operator*(const DenseMatrix<T>& other) const {
         throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
-    DenseMatrix<T> result(rows_, other.cols_);
-    for (size_t i = 0; i < rows_; ++i) {
-        for (size_t j = 0; j < other.cols_; ++j) {
-            result(i, j) = T(0); // Инициализация суммы
-            for (size_t k = 0; k < cols_; ++k) {
-                result(i, j) += (*this)(i, k) * other(k, j);
+    DenseMatrix<T> res(_rows, other._cols);
+
+    for (size_t i = 0; i < _rows; ++i) {
+        for (size_t j = 0; j < other._cols; ++j) {
+            res(i, j) = T(0); // Инициализация суммы
+            for (size_t k = 0; k < _cols; ++k) {
+                res(i, j) += (*this)(i, k) * other(k, j);
             }
         }
     }
-    return result;
+    return res;
+
 }
 
 // Метод для вывода матрицы
 template <typename T>
 void DenseMatrix<T>::Print() const {
+
     std::cout << "Dense Matrix:\n";
-    for (size_t i = 0; i < rows_; ++i) {
-        for (size_t j = 0; j < cols_; ++j) {
+
+    for (size_t i = 0; i < _rows; ++i) {
+        for (size_t j = 0; j < _cols; ++j) {
             std::cout << (*this)(i, j) << " ";
         }
         std::cout << std::endl;
     }
 }
 
-// Явная инстанциация для типов
 // Явная инстанциация для стандартных числовых типов
-
 template class DenseMatrix<int>;                       // int: 32-битное целое число (в большинстве сред).
 template class DenseMatrix<unsigned int>;              // unsigned int: Беззнаковое 32-битное целое число.
 template class DenseMatrix<short>;                     // short: Обычно 16-битное целое число.

@@ -1,18 +1,20 @@
 #include "DiagonalMatrix.h"
 
-// Конструктор
+// Конструктор, который принимает список значений для диагонали
 template<typename T>
 DiagonalMatrix<T>::DiagonalMatrix(std::initializer_list<T> initializer_list)
     : data(initializer_list.size(), std::vector<T>(initializer_list.size(), T(0))) {
     size = initializer_list.size();
     size_t index = 0;
-    for (auto& val : initializer_list) {
-        data[index][index] = val;  // Заполните диагональные элементы
+
+    // В цикле явно указываем компилятору что итератор - это тип
+    for (typename std::initializer_list<T>::iterator it = initializer_list.begin(); it != initializer_list.end(); ++it) {
+        data[index][index] = *it;
         ++index;
     }
 }
 
-// Конструктор для нулевой инициализации
+// Конструктор, который принимает размер и нулевую инициализацию
 template<typename T>
 DiagonalMatrix<T>::DiagonalMatrix(size_t Size)
     : data(Size, std::vector<T>(Size, T(0))) {
@@ -22,12 +24,10 @@ DiagonalMatrix<T>::DiagonalMatrix(size_t Size)
     }
 }
 
-// Реализация операторов
-   // Доступ к элементам матрицы
 template <typename T>
 T& DiagonalMatrix<T>::operator()(size_t i, size_t j) {
     if (i >= rows() || j >= cols()) {
-        throw std::out_of_range("Index out of range");
+        throw std::out_of_range("Индекс вне диапазона.");
     }
     return data[i][j];  
 }
@@ -35,18 +35,18 @@ T& DiagonalMatrix<T>::operator()(size_t i, size_t j) {
 template <typename T>
 const T& DiagonalMatrix<T>::operator()(size_t i, size_t j) const {
     if (i >= rows() || j >= cols()) {
-        throw std::out_of_range("Index out of range");
+        throw std::out_of_range("Индекс вне диапазона.");
     }
     return data[i][j];
 }
 
-// Метод получения количества строк
+// Метод для получения количества строк
 template <typename T>
 size_t DiagonalMatrix<T>::rows() const {
     return size;
 }
 
-// Метод получения количества столбцов
+// Метод для получения количества столбцов
 template <typename T>
 size_t DiagonalMatrix<T>::cols() const {
     return size;
@@ -54,6 +54,7 @@ size_t DiagonalMatrix<T>::cols() const {
 
 template <typename T>
 DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) const {
+
     // Проверка на несовместимые размеры
     if (rows() != other.rows()) {
         throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
@@ -62,22 +63,24 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator+(const DiagonalMatrix<T>& other) c
         throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
-    DiagonalMatrix<T> result(rows());
+    DiagonalMatrix<T> res(rows());
+
     for (size_t i = 0; i < rows(); ++i) {
         for (size_t j = 0; j < rows(); ++j)
         {
             if (i == j)
             {
-                result(i, j) = data[i][j] + other.data[i][j];
+                res(i, j) = data[i][j] + other.data[i][j];
             }
             
         }
     }
-    return result;
+    return res;
 }
 
 template <typename T>
 DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) const {
+
     // Проверка на несовместимые размеры
     if (rows() != other.rows()) {
         throw std::invalid_argument("Количество строк в матрицах не совпадает."); // Количество строк не совпадает
@@ -86,18 +89,19 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator-(const DiagonalMatrix<T>& other) c
         throw std::invalid_argument("Количество столбцов в матрицах не совпадает."); // Количество столбцов не совпадает
     }
 
-    DiagonalMatrix<T> result(rows());
+    DiagonalMatrix<T> res(rows());
+
     for (size_t i = 0; i < rows(); ++i) {
         for (size_t j = 0; j < rows(); ++j)
         {
             if (i == j)
             {
-                result(i, j) = data[i][j] - other.data[i][j];
+                res(i, j) = data[i][j] - other.data[i][j];
             }
 
         }
     }
-    return result;
+    return res;
 }
 
 template <typename T>
@@ -105,27 +109,36 @@ DiagonalMatrix<T> DiagonalMatrix<T>::operator*(const DiagonalMatrix<T>& other) c
 
     // Проверка на несовместимые размеры (число столбцов первой должно совпадать с числом строк второй)
     if (cols() != other.rows()) {
-        throw std::invalid_argument("Количество столбцов первой матрицы должно совпадать с количеством строк второй матрицы."); // Проверка совместимости для умножения
+        throw std::invalid_argument("Количество столбцов первой матрицы должно совпадать с количеством строк второй матрицы.");
     }
 
-    DiagonalMatrix<T> result(rows());
+    // Проверка на несовместимые размеры (число столбцов первой должно совпадать с числом строк второй)
+    if (rows() != other.cols()) {
+        throw std::invalid_argument("Количество строк первой матрицы должно совпадать с количеством столбцов второй матрицы.");
+    }
+
+    DiagonalMatrix<T> res(rows());
+
     for (size_t i = 0; i < rows(); ++i) {
         for (size_t j = 0; j < rows(); ++j)
         {
             if (i == j)
             {
-                result(i, j) = data[i][j] * other.data[i][j];
+                res(i, j) = data[i][j] * other.data[i][j];
             }
 
         }
     }
-    return result;
+    return res;
 }
 
 // Метод для вывода матрицы
+
 template <typename T>
 void DiagonalMatrix<T>::Print() const {
+
     std::cout << "Diagonal Matrix:\n";
+
     for (size_t i = 0; i < rows(); ++i) {
         for (size_t j = 0; j < cols(); ++j) {
             std::cout << data[i][j] << " ";

@@ -7,13 +7,13 @@
 BOOST_AUTO_TEST_SUITE(GeometryTests) // Объявляем набор тестов для Geometry2D
 
 // Тестовый случай для загрузки геометрических данных и их вывода
-BOOST_AUTO_TEST_CASE(LoadAndPrintGeometry) {
+BOOST_AUTO_TEST_CASE(GeometryTests_LoadAndPrintGeometry) {
     // Создание параметров приложения из командной строки
     // Конструктор принимает имя программы и соответствующие параметры
     const char* argv[] = {
         "program_name",
         "-ffgeom", "Geometry_TXT_Format",
-        "-fpgeom", "geometry2d.txt",//Этот файл должен быть в папке BoostTest
+        "-fpgeom", "geometry2d.txt", //Этот файл должен быть в папке BoostTest
         "-ffgrid", "grid2d_params_TXT_Format",
         "-fpgrid", "grid2d_params.txt"
     };
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(LoadAndPrintGeometry) {
     // Выводим информацию о геометрии в консоль
     geometry2D.Print();
 
-    // Выполняем проверки значений данных геометрии
+    // Выполняем проверки некоторых значений данных геометрии
     // Пример проверки: значение в (0, 0) должно быть 0
     BOOST_CHECK_EQUAL(geometry2D.GetData(0, 0), 0);
     // Пример проверки: значение в (1, 2) должно быть 0
@@ -41,15 +41,16 @@ BOOST_AUTO_TEST_CASE(LoadAndPrintGeometry) {
 }
 
 // Тестовый случай для проверки обработки ошибок при несуществующем файле
-BOOST_AUTO_TEST_CASE(FailOnInvalidFile) {
+BOOST_AUTO_TEST_CASE(GeometryTests_FailOnInvalidFile) {
     // Создание массива аргументов, где указан несуществующий файл
     const char* argv[] = {
         "program_name",
         "-ffgeom", "Geometry_TXT_Format",
         "-fpgeom", "non_existing_file.txt",
         "-ffgrid", "grid2d_params_TXT_Format",
-        "-fpgrid", "grid2d_params.txt"//Этот файл должен быть в папке BoostTest
+        "-fpgrid", "grid2d_params.txt" //Этот файл должен быть в папке BoostTest
     };
+
     int argc = sizeof(argv) / sizeof(argv[0]); // Определяем количество аргументов
 
     // Создание объекта AppParams для парсинга аргументов командной строки

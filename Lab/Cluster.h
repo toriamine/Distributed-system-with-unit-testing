@@ -7,6 +7,7 @@
 // Класс для представления кластера, который содержит узлы (ClusterNode)
 class Cluster {
 public:
+
     // Метод для добавления узла в кластер
     void AddNode(const ClusterNode& node);
 
@@ -16,14 +17,10 @@ public:
     // Метод для получения узла по его идентификатору
     const ClusterNode* GetNode(const std::string& nodeId) const;
 
-    const ClusterNode* GetNode(size_t index) const {
-        if (index < nodes_.size()) {
-            return &nodes_[index];
-        }
-        return nullptr;
-    }
+    // Метод для получения узла по его индексу
+    const ClusterNode* GetNode(size_t index) const;
 
 private:
-    std::vector<ClusterNode> nodes_;  // Вектор, хранящий узлы кластера
-    std::unordered_map<std::string, ClusterNode*> nodeMap_; // Соответствие идентификаторов узлов и указателей на них
+    std::vector<ClusterNode> _nodes;  // Вектор, хранящий узлы кластера
+    std::unordered_map<std::string, ClusterNode*> _nodeMap; // Соответствие идентификаторов узлов и указателей на них в виде карты
 };

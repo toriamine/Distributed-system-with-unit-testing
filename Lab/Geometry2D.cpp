@@ -10,7 +10,7 @@ Geometry2D::Geometry2D(const AppParams& appParams)
     std::ifstream file(appParams.geometryFilePath); // Открытие файла
     if (!file.is_open()) // Проверка успешного открытия файла
     {
-        throw std::runtime_error("Error opening file: " + appParams.geometryFilePath);
+        throw std::runtime_error("Ошибка при открытии файла: " + appParams.geometryFilePath);
     }
 
     std::string format;
@@ -19,7 +19,7 @@ Geometry2D::Geometry2D(const AppParams& appParams)
     // Проверка соответствия формата
     if (format != "Geometry_TXT_Format")
     {
-        throw std::runtime_error("File must be in Geometry_TXT_Format format");
+        throw std::runtime_error("Файл должен быть в формате Geometry_TXT_Format.");
     }
 
     // Чтение размеров фрагментов и их количества
