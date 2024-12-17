@@ -1,6 +1,7 @@
+=Основные моменты
 Стандарт языка С++: Стандарт ISO C++17 (/std:c++17). Нужно установить это в свойствах проекта.\
 Программа запускается из консоли в папке со сборкой exe проекта: НазваниеРешения.exe -ffgeom txt -fpgeom geometry2d.txt -ffgrid txt -fpgrid grid2d_params.txt. Например: LabProject.exe -ffgeom txt -fpgeom geometry2d.txt -ffgrid txt -fpgrid grid2d_params.txt.\
-В решение использованы модульные тесты BoostTest. Для сборки проекта с модульными тестами желателен Release, а не Debug.\
+В решение использованы модульные тесты BoostTest. Для сборки проекта с модульными тестами желателен Release, а не Debug. Вот это видео очень помогло с установкой BoostTest:https://yandex.ru/video/preview/13258720571404596975\
 Описание входящих файлов:
 1) Геометрия расчетной области:
 * Geometry2D.h содержит описание структуры Geometry2D для хранения информации о геометрии расчетной области. Объявление функций для работы с геометрией, например, для чтения/записи данных;
@@ -30,6 +31,123 @@
 *	BoostTest/BlockMatrixTests.cpp - модульные тесты для проверки корректности работы класса BlockMatrix, включая тесты для умножения матриц Кронекера;
 *	BoostTest/VectorHCSTests.cpp  - модульные тесты для проверки корректности работы класса VectorHCS, реализовано скалярное произведение и умножение матриц на число.
 
+Описание и инструкция VectorHCS:
+!Изначальная структура VectorHCS была изменена: добавлена структура Block для корректного распределения по узлам.
+В VectorHCS есть обязательные функции, которые нельзя убирать, чтобы избежать ошибок с  повреждением кучи:
+1) Конструктор копирования (VectorHCS(const VectorHCS& other)):
+Цель: Создает новый объект как копию существующего.
+Причина использования: Если не определить конструктор копирования, компилятор сгенерирует его автоматически. Однако автоматически сгенерированный конструктор копирования выполняет побитовое копирование всех членов класса, что может привести к проблемам с динамически выделенной памятью (например, двойное удаление).
+Реализация:
+```
+template <typename T>
+VectorHCS<T>::VectorHCS(const VectorHCS& other)
+    : _size(other._size), _blockSize(other._blockSize),
+      _nodeOffset(other._nodeOffset), _deviceOffset(other._deviceOffset),
+      _cluster(other._cluster),
+      _numNodes(other._numNodes), _numBlocks(other._numBlocks) {
+
+    _blocks.reserve(_numBlocks);
+    for (const Block& block : other._blocks) {
+        _blocks.push_back({ block.node, block.deviceIndex, new std::vector<T>(*block.data) });
+    }
+}
+```
+2)Оператор копирующего присваивания (VectorHCS& operator=(const VectorHCS& other)):
+Цель: Присваивает значения одного объекта другому.
+Причина использования: Аналогично конструктору копирования, автоматически сгенерированный оператор копирующего присваивания выполняет побитовое копирование, что может привести к проблемам с динамически выделенной памятью.
+Реализация:
+```
+template <typename T>
+VectorHCS<T>& VectorHCS<T>::operator=(const VectorHCS& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    _size = other._size;
+    _blockSize = other._blockSize;
+    _nodeOffset = other._nodeOffset;
+    _deviceOffset = other._deviceOffset;
+    _cluster = other._cluster;
+    _numNodes = other._numNodes;
+    _numBlocks = other._numBlocks;
+
+    // Освобождаем текущие данные
+    for (Block& block : _blocks) {
+        delete block.data;
+    }
+    _blocks.clear();
+
+    _blocks.reserve(_numBlocks);
+    for (const Block& block : other._blocks) {
+        _blocks.push_back({ block.node, block.deviceIndex, new std::vector<T>(*block.data) });
+    }
+
+    return *this;
+}
+```
+3)Конструктор перемещения (VectorHCS(VectorHCS&& other) noexcept):
+Цель: Создает новый объект, "украшая" ресурсы существующего объекта (обычно временного).
+Причина использования: Перемещение позволяет избежать лишнего копирования и освобождения памяти, что повышает производительность. Автоматически сгенерированный конструктор перемещения выполняет побитовое перемещение, что может привести к проблемам с динамически выделенной памятью.
+Реализация:
+```
+template <typename T>
+VectorHCS<T>::VectorHCS(VectorHCS&& other) noexcept
+    : _size(other._size), _blockSize(other._blockSize),
+      _nodeOffset(other._nodeOffset), _deviceOffset(other._deviceOffset),
+      _cluster(other._cluster),
+      _numNodes(other._numNodes), _numBlocks(other._numBlocks),
+      _blocks(std::move(other._blocks)) {
+
+    // Обнуляем указатели в перемещенном объекте
+    for (Block& block : other._blocks) {
+        block.data = nullptr;
+    }
+}
+```
+4)Оператор перемещающего присваивания (VectorHCS& operator=(VectorHCS&& other) noexcept):
+Цель: Присваивает значения одного объекта другому, "украшая" ресурсы существующего объекта (обычно временного).
+Причина использования: Аналогично конструктору перемещения, автоматически сгенерированный оператор перемещающего присваивания выполняет побитовое перемещение, что может привести к проблемам с динамически выделенной памятью.
+Реализация:
+```
+template <typename T>
+VectorHCS<T>& VectorHCS<T>::operator=(VectorHCS&& other) noexcept {
+    if (this == &other) {
+        return *this;
+    }
+
+    _size = other._size;
+    _blockSize = other._blockSize;
+    _nodeOffset = other._nodeOffset;
+    _deviceOffset = other._deviceOffset;
+    _cluster = other._cluster;
+    _numNodes = other._numNodes;
+    _numBlocks = other._numBlocks;
+
+    // Освобождаем текущие данные
+    for (Block& block : _blocks) {
+        delete block.data;
+    }
+    _blocks.clear();
+
+    _blocks = std::move(other._blocks);
+
+    // Обнуляем указатели в перемещенном объекте
+    for (Block& block : other._blocks) {
+        block.data = nullptr;
+    }
+
+    return *this;
+}
+```
+*Почему эти методы важны*
+Избежание двойного удаления:
+Без правильного управления ресурсами при копировании или перемещении может происходить двойное удаление, что приводит к повреждению кучи и ошибкам времени выполнения.
+Управление производительностью:
+Перемещение позволяет избежать лишнего копирования, что повышает производительность, особенно при работе с большими объектами.
+Правильное копирование и перемещение:
+Конструкторы и операторы копирования и перемещения обеспечивают правильное копирование и перемещение объектов, что предотвращает утечки памяти и другие ошибки.
+
+
 Материалы:
 1)	https://metanit.com/cpp/tutorial/7.14.php - использование библиотеки для карт в С++;
 2)	https://iq.opengenus.org/unordered-map-cpp-stl/ - использование библиотеки STL «unordered_map»;
@@ -43,7 +161,6 @@
 10)	Справочник по стандарту языка С++: https://scrutator.me/post/2017/10/07/cpp17_lang_features_p2.aspx?ysclid=m3z0kd0qgj432146158 
 11)	Когда я читала статьи по созданию матриц мне попалась статья про шаблоны классов, там была реализована матрицы, от туда я взяла идею о модифицируемом и константном операторе () доступа в матрицах: https://education.yandex.ru/handbook/cpp/article/template-classes 
 Вот еще одна ссылка по перегрузке: https://sysprog.ru/post/peregruzka-operatorov-v-yazyke-c#brace
-
 12)	Использование initializer_list для заполнения матриц, очень удобная вещь, вот короткая статья про использование: https://en.cppreference.com/w/cpp/utility/initializer_list 
 На этом сайте написана тоже неплохая статья: https://www.cppstories.com/2023/initializer_list_basics/ 
 13)	Очень классная статья, связанная с логированием: https://htrd.su/blog/2016/03/15/std_cout_std_cerr_i_std_clog/
@@ -57,4 +174,15 @@ https://manpages.debian.org/jessie/mlpack-doc/old_boost_test_definitions.hpp.3
 19)	Статья про явные преобразования типов: https://metanit.com/cpp/tutorial/2.4.php 
 20)	Явное объявление типов шаблона: https://habr.com/ru/articles/235831/ 
 https://spec-zone.ru/cpp/language/class_template
-21) Это про оформление README.md: https://skillbox.ru/media/code/yazyk-razmetki-markdown-shpargalka-po-sintaksisu-s-primerami/#stk-12
+21)Статья про BoostTest (использование):
+https://pro-prof.com/archives/1549
+22)Спецификатор Noexcept, особенно в стандарте С++17 в сложных решениях для контроля над исключениями и выполнением компиляции (делала отладку проблемы с кучей):
+https://learn.microsoft.com/ru-ru/cpp/cpp/noexcept-cpp?view=msvc-170
+https://www.geeksforgeeks.org/noexcept-specifier-in-cpp-17/
+23) Про различные конструкторы (отсылка к реализации VectorHCS):https://pvoid.pro/index.php/11-remarks/cplusplus/16-special-members#article-header-2
+
+Дополнительные материалы:
+1) Это про оформление README.md: https://skillbox.ru/media/code/yazyk-razmetki-markdown-shpargalka-po-sintaksisu-s-primerami/#stk-12
+2) Ключевое слово auto очень хорошо влияет на производительность, если структура данных сложная (например, итератор): https://learn.microsoft.com/ru-ru/cpp/cpp/auto-cpp?view=msvc-170
+3)Интересная статья про разные стандарты :https://habr.com/ru/articles/546996/
+4)Очень хороший сайт с множеством полезных советов и практик по C++: https://www.demo2s.com/g/cpp/for-cpp-how-is-auto-used-in-range-based-for-loops-what-advantages-does-using-auto-pr.html
